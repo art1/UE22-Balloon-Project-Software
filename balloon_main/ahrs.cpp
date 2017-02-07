@@ -37,7 +37,7 @@ AHRS::AHRS(){
  * initializes the IMU and calibrates the Accl and Gyro (do not touch while calibrating!)
  */
 void AHRS::ahrs_init(){
-  Serial.println("Initializing IMU...");
+  Serial.print("\nInitializing IMU...");
   imu.IMUdata_Init();  
 
   delay(1500);
@@ -45,9 +45,9 @@ void AHRS::ahrs_init(){
   imu.Accel_Init();
   imu.Compass_Init();
   imu.Gyro_Init();
-  Serial.println("Initializing done!");
+  Serial.print("..done!\n");
   delay(20);
-  Serial.println("Calibrating IMU...");
+  Serial.print("Calibrating IMU...");
   for(int i=0;i<32;i++)    // We take some readings...
     {
     imu.Read_Gyro();
@@ -63,7 +63,7 @@ void AHRS::ahrs_init(){
   imu.AN_OFFSET[5]-=GRAVITY*imu.SENSOR_SIGN[5];
   delay(2000);
   counter=0;
-  Serial.println("IMU calibration done!");
+  Serial.print("..done!\n");
 
 
 }
