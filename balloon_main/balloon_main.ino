@@ -26,6 +26,7 @@ void setup()
 
   #ifdef SD_ENABLED
   sd.init();
+  sd.writeHeader(sd.filename);
   #endif
 
   timer=millis();
@@ -62,9 +63,11 @@ void loop() //Main Loop
   {
     timer_old2 = timer2;
     timer2=millis();
-
+    
     #ifdef SD_ENABLED
-    sd.writeTestString();
+    dataToSD d;
+    sd.writeToSD(d, sd.filename); //writes Data to specified File
+    //sd.writeTestString();
     #endif
   }
 

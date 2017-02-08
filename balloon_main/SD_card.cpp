@@ -9,6 +9,29 @@ void SDCard::init(){
     // don't do anything more:
     return;
   }
+  
+  //++++write Header+++++
+  
+
+}
+
+void SDCard::writeHeader(String fn){
+  String dataString = "Yaw,Pitch,Roll,temp0,temp1,temp2,temp3,temp4,temp5,press,humid,lum0,lum1,lum2";  
+  // open the file. note that only one file can be open at a time,
+  // so you have to close this one before opening another.
+  File dataFile = SD.open(fn, FILE_WRITE);
+
+  // if the file is available, write to it:
+  if (dataFile) {
+    dataFile.println(dataString);
+    dataFile.close();
+    // print to the serial port too:
+    Serial.println(dataString);
+  }
+  // if the file isn't open, pop up an error:
+  else {
+    Serial.println("error opening " + fn);
+  }
 }
 
 void SDCard::writeTestString(){
@@ -37,12 +60,25 @@ void SDCard::writeTestString(){
   }
   // if the file isn't open, pop up an error:
   else {
-    Serial.println("error opening datalog.txt");
+    Serial.println("error opening test.txt");
   }
 }
 
-void SDCard::writeToSD(dataToSD d){
-  String dataString = d.toString();
-  Serial.println(dataString);
-  
+void SDCard::writeToSD(dataToSD d, String fn){
+  String dataString = d.toString();  
+  // open the file. note that only one file can be open at a time,
+  // so you have to close this one before opening another.
+  File dataFile = SD.open(fn, FILE_WRITE);
+
+  // if the file is available, write to it:
+  if (dataFile) {
+    dataFile.println(dataString);
+    dataFile.close();
+    // print to the serial port too:
+    Serial.println(dataString);
+  }
+  // if the file isn't open, pop up an error:
+  else {
+    Serial.println("error opening " + fn);
+  }
 }
