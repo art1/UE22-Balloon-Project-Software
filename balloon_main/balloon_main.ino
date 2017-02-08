@@ -27,7 +27,7 @@ void setup()
   #ifdef SD_ENABLED
   sd.init();
   #endif
-  
+
   timer=millis();
   delay(20);
 }
@@ -42,33 +42,33 @@ void loop() //Main Loop
     timer=millis();
 
 
-#ifdef IMU_ENABLED
+    #ifdef IMU_ENABLED
     ahrs.ahrs_fetchData(timer,timer_old);
     filtered_data f = ahrs.getFilteredData();
     raw_data r = ahrs.getRawData();
 
-      Serial.print("RPY:");
-      Serial.print(ToDeg(f.roll));
-      Serial.print(",");
-      Serial.print(ToDeg(f.pitch));
-      Serial.print(",");
-      Serial.print(ToDeg(f.yaw));
-      Serial.println();
-#endif
+    Serial.print("RPY:");
+    Serial.print(ToDeg(f.roll));
+    Serial.print(",");
+    Serial.print(ToDeg(f.pitch));
+    Serial.print(",");
+    Serial.print(ToDeg(f.yaw));
+    Serial.println();
+    #endif
 
 
 
 
   }
 
-    if((millis()-timer2)>=200)  // SD loop runs at 5Hz
+  if((millis()-timer2)>=200)  // SD loop runs at 5Hz
   {
-        timer_old2 = timer2;
-        timer2=millis();
-    
-#ifdef SD_ENABLED
-        sd.writeString();
-#endif    
+    timer_old2 = timer2;
+    timer2=millis();
+
+    #ifdef SD_ENABLED
+    sd.writeString();
+    #endif
   }
 
 }

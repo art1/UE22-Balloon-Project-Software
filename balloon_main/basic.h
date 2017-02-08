@@ -29,4 +29,3 @@ struct filtered_data{
 
 
 #endif
-
