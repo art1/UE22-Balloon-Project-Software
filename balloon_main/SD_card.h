@@ -3,7 +3,7 @@
 class SDCard{
 public:
   void init();
-  void writeString();
+  void writeTestString();
 private:
   const int chipSelect = 8;
 };
