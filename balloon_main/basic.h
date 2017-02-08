@@ -5,7 +5,8 @@
 
 
 // AHRS and IMU stuff
-#define IMU_ENABLED
+//#define IMU_ENABLED
+#define SD_ENABLED
 
 struct raw_data{
   int gx;

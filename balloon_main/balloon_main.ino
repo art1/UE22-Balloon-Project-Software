@@ -1,13 +1,18 @@
 
 #include "basic.h"
 #include "ahrs.h"
+#include "SD_Card.h"
 
 #ifdef IMU_ENABLED
 AHRS ahrs;
 #endif
 
-long timer=0;   //general purpuse timer
-long timer_old;
+#ifdef SD_ENABLED
+SDCard sd;
+#endif
+
+long timer=0, timer2=0;   //general purpuse timer
+long timer_old, timer_old2;
 
 void setup()
 {
@@ -17,6 +22,10 @@ void setup()
 
   #ifdef IMU_ENABLED
   ahrs.ahrs_init();
+  #endif
+
+  #ifdef SD_ENABLED
+  sd.init();
   #endif
   
   timer=millis();
@@ -48,6 +57,18 @@ void loop() //Main Loop
 #endif
 
 
+
+
+  }
+
+    if((millis()-timer2)>=200)  // SD loop runs at 5Hz
+  {
+        timer_old2 = timer2;
+        timer2=millis();
+    
+#ifdef SD_ENABLED
+        sd.writeString();
+#endif    
   }
 
 }
