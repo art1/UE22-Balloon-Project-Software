@@ -6,6 +6,7 @@
 
 // AHRS and IMU stuff
 //#define IMU_ENABLED
+//#define IMU_DEBUG_OUTPUT
 #define SD_ENABLED
 
 struct raw_data{

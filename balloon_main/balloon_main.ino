@@ -36,17 +36,17 @@ void setup()
 
 void loop() //Main Loop
 {
-  if((millis()-timer)>=20)  // Main loop runs at 50Hz
+  if((millis()-timer)>=20)  // AHRS loop runs at 50Hz
   {
     timer_old = timer;
     timer=millis();
 
-
     #ifdef IMU_ENABLED
     ahrs.ahrs_fetchData(timer,timer_old);
+    
+    #ifdef IMU_DEBUG_OUTPUT
     filtered_data f = ahrs.getFilteredData();
     raw_data r = ahrs.getRawData();
-
     Serial.print("RPY:");
     Serial.print(ToDeg(f.roll));
     Serial.print(",");
@@ -55,10 +55,7 @@ void loop() //Main Loop
     Serial.print(ToDeg(f.yaw));
     Serial.println();
     #endif
-
-
-
-
+    #endif
   }
 
   if((millis()-timer2)>=200)  // SD loop runs at 5Hz
