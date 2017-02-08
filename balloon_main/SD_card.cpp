@@ -40,3 +40,9 @@ void SDCard::writeTestString(){
     Serial.println("error opening datalog.txt");
   }
 }
+
+void SDCard::writeToSD(dataToSD d){
+  String dataString = d.toString();
+  Serial.println(dataString);
+  
+}
