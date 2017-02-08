@@ -64,7 +64,7 @@ void loop() //Main Loop
     timer2=millis();
 
     #ifdef SD_ENABLED
-    sd.writeString();
+    sd.writeTestString();
     #endif
   }
 
