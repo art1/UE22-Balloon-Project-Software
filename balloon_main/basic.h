@@ -39,7 +39,12 @@ struct dataToSD{
   dataToSD(): yaw(0),pitch(0),roll(0),temp0(0),temp1(0),temp2(0),temp3(0),
               temp4(0),temp5(0),press(0),humid(0),lum0(0),lum1(0),lum2(0) {}
               
-              
+  void filterDataToSD(filtered_data f){
+    yaw = f.yaw;
+    pitch = f.pitch;
+    roll = f.roll;
+  }      
+        
   String toString(){
     short dec = 3;
     return "" + String(yaw, dec) + "," + String(pitch, dec) + "," + String(roll, dec) + "," + String(temp0, dec)

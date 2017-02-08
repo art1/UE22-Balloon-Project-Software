@@ -36,7 +36,7 @@ void setup()
 
 
 void loop() //Main Loop
-{
+{  
   if((millis()-timer)>=20)  // AHRS loop runs at 50Hz
   {
     timer_old = timer;
@@ -59,7 +59,7 @@ void loop() //Main Loop
     #endif
   }
 
-  if((millis()-timer2)>=200)  // SD loop runs at 5Hz
+  if((millis()-timer2)>=500)  // SD loop runs at 2Hz
   {
     timer_old2 = timer2;
     timer2=millis();
@@ -67,7 +67,6 @@ void loop() //Main Loop
     #ifdef SD_ENABLED
     dataToSD d;
     sd.writeToSD(d, sd.filename); //writes Data to specified File
-    //sd.writeTestString();
     #endif
   }
 

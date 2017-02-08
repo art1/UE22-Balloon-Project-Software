@@ -7,9 +7,8 @@ class SDCard{
 public:
   void init();
   void writeHeader(String fn);
-  void writeTestString();
   void writeToSD(dataToSD d, String fn);
-  const String filename = "test2.txt";
+  const String filename = "test2.csv";
 private:
   const int chipSelect = 8;  
 };
