@@ -124,6 +124,9 @@ void loop() //Main Loop
     lightsensval = readLightSensor();
     #endif
 
+    #ifdef MCP_ENABLED
+    MCPtempval = readMCPSensor();
+    #endif
     timer_old2 = timer2;
     timer2=millis();
 

@@ -30,7 +30,6 @@ float readLightSensor() {
   else
   {
     byte error = light.getError();
-    //printError(error);
     return -1.f;
   }
   return -1.f;
