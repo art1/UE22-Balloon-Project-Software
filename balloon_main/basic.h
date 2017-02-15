@@ -31,6 +31,7 @@ struct dataToSD{
   float yaw;
   float pitch;
   float roll;
+  int gx, gy, gz, ax, ay, az, mx, my, mz;
   float temp0,temp1,temp2,temp3,temp4,temp5;
   float press;
   float humid;
@@ -43,7 +44,13 @@ struct dataToSD{
     yaw = f.yaw;
     pitch = f.pitch;
     roll = f.roll;
-  }      
+  }    
+
+  void rawDataToSD(raw_data r){
+    gx = r.gx; gy = r.gy; gz = r.gz;
+    ax = r.ax; ay = r.ay; az = r.az;
+    mx = r.mx; my = r.my; mz = r.mz;
+  }
         
   String toString(){
     short dec = 3;

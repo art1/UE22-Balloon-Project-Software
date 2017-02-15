@@ -14,6 +14,7 @@ SDCard sd;
 long timer=0, timer2=0;   //general purpuse timer
 long timer_old, timer_old2;
 
+
 void setup()
 {
   Serial.begin(115200);
@@ -46,8 +47,8 @@ void loop() //Main Loop
     ahrs.ahrs_fetchData(timer,timer_old);
     
     #ifdef IMU_DEBUG_OUTPUT
-    filtered_data f = ahrs.getFilteredData();
-    raw_data r = ahrs.getRawData();
+    filtered_data filt = ahrs.getFilteredData();
+    raw_data raw = ahrs.getRawData();
     Serial.print("RPY:");
     Serial.print(ToDeg(f.roll));
     Serial.print(",");
@@ -66,6 +67,10 @@ void loop() //Main Loop
     
     #ifdef SD_ENABLED
     dataToSD d;
+    #ifdef IMU_ENABLED
+    d.filterDataToSD(ahrs.getFilteredData());
+    d.rawDataToSD(ahrs.getRawData());
+    #endif
     sd.writeToSD(d, sd.filename); //writes Data to specified File
     #endif
   }
