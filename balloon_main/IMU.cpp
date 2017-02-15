@@ -331,7 +331,7 @@ void IMU::Euler_angles(void)
 
 
 raw_data IMU::getRawData(void){
-  return raw_data{AN[0],AN[1],AN[2],AN[3],AN[4],AN[5],c_magnetom_x,c_magnetom_y,c_magnetom_z};
+  return raw_data{gyro_x,gyro_y,gyro_z,accel_x,accel_y,accel_z,c_magnetom_x,c_magnetom_y,c_magnetom_z};
 }
 
 filtered_data IMU::getFilteredData(void){

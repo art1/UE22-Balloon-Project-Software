@@ -26,6 +26,10 @@ Adafruit_MCP9808 tempsensor = Adafruit_MCP9808();
 SFE_TSL2561 light = SFE_TSL2561();
 #endif
 
+#ifdef HUMID_ENABLED
+Adafruit_HTU21DF htu = Adafruit_HTU21DF();
+#endif
+
 //MCP and Dallas variables
 float lightsensval = 0.f;
 float MCPtempval = 0.f;
@@ -34,9 +38,13 @@ byte addr[8];
 boolean gain;
 unsigned int ms = 1000;
 
+// HTU variables
+float humidity = 0.0f;
+float htu_temp = 0.0f;
 
-long timer=0, timer2=0;   //general purpuse timer
-long timer_old, timer_old2;
+
+unsigned long timer=0, timer2=0;   //general purpuse timer
+unsigned long timer_old, timer_old2;
 
 
 void setup()
@@ -66,9 +74,12 @@ void setup()
   initDallasSensor();
   #endif
 
+  #ifdef HUMID_ENABLED
+  htu.begin();
+  #endif
 
   timer=millis();
-  delay(20);
+  delay(200);
 }
 
 
@@ -125,16 +136,29 @@ void loop() //Main Loop
     lightsensval = readLightSensor();
     #endif
 
+    #ifdef HUMID_ENABLED
+    humidity = htu.readHumidity();
+    htu_temp = htu.readTemperature();
+    #endif
+
     timer_old2 = timer2;
     timer2=millis();
 
+    #ifdef GPS_SYNC_ENABLED
+    // arty working on this one
+    #endif
+
     #ifdef SD_ENABLED
     dataToSD d;
+    
     #ifdef IMU_ENABLED
     d.filterDataToSD(ahrs.getFilteredData());
     d.rawDataToSD(ahrs.getRawData());
     #endif
+    
     d.lum0 = lightsensval;
+    d.humid = humidity;
+    d.temp0 = htu_temp;
     sd.writeToSD(d, sd.filename); //writes Data to specified File
     #endif
   }
