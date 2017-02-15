@@ -1,10 +1,14 @@
 #include "lum_sensors.h"
 
 //Instances from balloon_main
+#ifdef LIGHT_ENABLED
 extern SFE_TSL2561 light;
+#endif
+
 extern boolean gain;
 extern unsigned int ms;
 
+#ifdef LIGHT_ENABLED
 void initLightSensor() {
   light.begin();
   gain = 0;
@@ -34,3 +38,4 @@ float readLightSensor() {
   }
   return -1.f;
 }
+#endif

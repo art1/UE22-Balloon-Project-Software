@@ -1,5 +1,17 @@
 #include "temp_sensors.h"
 
+byte addr[8];
+#ifdef MCP_ENABLED
+extern Adafruit_MCP9808 tempsensor;
+#endif
+
+#ifdef DALLAS_ENABLED
+extern OneWire oneWire;
+extern OneWire ds;
+extern DallasTemperature Dallastempsensor;
+#endif
+
+#ifdef MCP_ENABLED
 void initMCPSensor() {
     if (!tempsensor.begin()) {
     Serial.println("Couldn't find MCP9808!");
@@ -9,7 +21,9 @@ void initMCPSensor() {
 float readMCPSensor() {
   return (float) tempsensor.readTempC();
 }
+#endif
 
+#ifdef DALLAS_ENABLED
 void initDallasSensor() {
    if ( !ds.search(addr)) {
      ds.reset_search();
@@ -20,10 +34,7 @@ float readDallasSensor() {
    //returns the temperature from one DS18S20 in DEG Celsius
   
    byte data[12];
-
-  
-
-  
+   
    if ( OneWire::crc8( addr, 7) != addr[7]) {
      Serial.println("CRC is not valid!");
      return -1000;
@@ -55,3 +66,4 @@ float readDallasSensor() {
    
    return TemperatureSum;
 }
+#endif

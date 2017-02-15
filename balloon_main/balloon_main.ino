@@ -3,7 +3,7 @@
 #include "ahrs.h"
 #include "SD_Card.h"
 #include "lum_sensors.h"
-
+#include "temp_sensors.h"
 #ifdef IMU_ENABLED
 AHRS ahrs;
 #endif
@@ -26,17 +26,38 @@ Adafruit_MCP9808 tempsensor = Adafruit_MCP9808();
 SFE_TSL2561 light = SFE_TSL2561();
 #endif
 
+#ifdef HUMID_ENABLED
+Adafruit_HTU21DF htu = Adafruit_HTU21DF();
+#endif
+
 //MCP and Dallas variables
 float lightsensval = 0.f;
 float MCPtempval = 0.f;
 float Dallastempval = 0.f;
-byte addr[8];
 boolean gain;
 unsigned int ms = 1000;
 
+// HTU variables
+float humidity = 0.0f;
+float htu_temp = 0.0f;
 
-long timer=0, timer2=0;   //general purpuse timer
-long timer_old, timer_old2;
+#ifdef GPS_SYNC_ENABLED
+// checking on Pin A1
+#define GPS_HIGH 1
+#define GPS_LOW 0
+int lastGPSState = GPS_HIGH;
+bool fixFound = false;
+int currentGPS_SyncPinStata(){
+  float voltagelvl = analogRead(GPS_SYNC_PIN) * .0049;
+  if (voltagelvl < 1.0f){ return GPS_LOW;}
+  else return GPS_HIGH;
+}
+#endif
+
+
+unsigned long timer=0, timer_sd=0, timer_dallas=0, timer_mcp=0, timerGPS=0;   //general purpuse timer
+unsigned long timer_old, timer_old_sd, timer_old_dallas, timer_old_mcp;
+
 
 void setup()
 {
@@ -65,9 +86,12 @@ void setup()
   initDallasSensor();
   #endif
 
+  #ifdef HUMID_ENABLED
+  htu.begin();
+  #endif
 
   timer=millis();
-  delay(20);
+  delay(200);
 }
 
 
@@ -83,8 +107,8 @@ void loop() //Main Loop
     ahrs.ahrs_fetchData(timer,timer_old);
 
     #ifdef IMU_DEBUG_OUTPUT
-    filtered_data f = ahrs.getFilteredData();
-    raw_data r = ahrs.getRawData();
+    filtered_data filt = ahrs.getFilteredData();
+    raw_data raw = ahrs.getRawData();
     Serial.print("RPY:");
     Serial.print(ToDeg(f.roll));
     Serial.print(",");
@@ -96,15 +120,31 @@ void loop() //Main Loop
     #endif
   }
 
+// check GPS Sync Pin State every second, if two onsecutive lows are deteceted, the Fix has been found
+  #ifdef GPS_SYNC_ENABLED
+  if(!fixFound){
+    if((millis()-timerGPS)>=1000){
+      int currentState = currentGPS_SyncPinStata();
+      if((lastGPSState == currentState) && (currentState == GPS_LOW)) {
+        fixFound = true;
+        // write some line to SD card
+        sd.writeGPSSync(sd.filename,timerGPS);
+      }
+      lastGPSState = currentState;
+      timerGPS = millis();
+    }
+  }
+  #endif
 
-
-  if((millis()-timer2)>=500)  // SD loop runs at 2Hz
+  if((millis()-timer_mcp)>=100)  // SD loop runs at 2Hz
   {
+    timer_old_mcp = timer_mcp;
+    timer_mcp=millis();
 
     #ifdef LIGHT_ENABLED
-    ms = 100;
     light.manualStart();
     #endif
+    ms = 100;
 
     #ifdef MCP_ENABLED
     tempsensor.shutdown_wake(1);
@@ -127,12 +167,36 @@ void loop() //Main Loop
     #ifdef MCP_ENABLED
     MCPtempval = readMCPSensor();
     #endif
-    timer_old2 = timer2;
-    timer2=millis();
+
+    #ifdef DALLAS_ENABLED
+    Dallastempval = readDallasSensor();
+    #endif
+  }
+
+
+  if((millis()-timer_sd)>=500)  // SD loop runs at 2Hz
+  {
+    timer_old_sd = timer_sd;
+    timer_sd=millis();
+
+    #ifdef HUMID_ENABLED
+    humidity = htu.readHumidity();
+    htu_temp = htu.readTemperature();
+    #endif
 
     #ifdef SD_ENABLED
     dataToSD d;
+
+    #ifdef IMU_ENABLED
+    d.filterDataToSD(ahrs.getFilteredData());
+    d.rawDataToSD(ahrs.getRawData());
+    #endif
+
     d.lum0 = lightsensval;
+    d.humid = humidity;
+    d.temp0 = htu_temp;
+    d.temp1 = MCPtempval;
+    d.temp2 = Dallastempval;
     sd.writeToSD(d, sd.filename); //writes Data to specified File
     #endif
   }
