@@ -11,6 +11,9 @@ LSM303 version: 3.0.1
 
 L3G version: 3.0.0
 
+Other libraries used, can be found in sensortest:
+Adafruit_MCP9808, OneWire, SparkFun_TSL2561
+
 Balloon-main will be running on Arduino Mega2650
 
 ---
