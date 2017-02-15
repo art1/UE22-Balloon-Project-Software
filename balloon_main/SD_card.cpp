@@ -19,7 +19,30 @@ void SDCard::init(){
  *  @Input: String: filename specifying the name and format (.txt, .csv)
  */
 void SDCard::writeHeader(String fn){
-  String dataString = "Yaw,Pitch,Roll,temp0,temp1,temp2,temp3,temp4,temp5,press,humid,lum0,lum1,lum2";  
+  String dataString = "Yaw,Pitch,Roll,Gx,Gy,Gz,Ax,Ay,Az,Mx,My,Mz,temp0,temp1,temp2,temp3,temp4,temp5,press,humid,lum0,lum1,lum2";  
+  // open the file. note that only one file can be open at a time,
+  // so you have to close this one before opening another.
+  File dataFile = SD.open(fn, FILE_WRITE);
+
+  // if the file is available, write to it:
+  if (dataFile) {
+    dataFile.println(dataString);
+    dataFile.close();
+    // print to the serial port too:
+    Serial.println(dataString);
+  }
+  // if the file isn't open, pop up an error:
+  else {
+    Serial.println("error opening " + fn);
+  }
+}
+
+/* Header used at start to write to SD
+ *  @Input: String: filename specifying the name and format (.txt, .csv),
+ *          unsigned long: current arduino time in milliseconds
+ */
+void SDCard::writeGPSSync(String fn, unsigned long m){
+  String dataString = ";GPS Found at arduino time " + String(m,DEC) + " (-1 second)";  
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
   File dataFile = SD.open(fn, FILE_WRITE);

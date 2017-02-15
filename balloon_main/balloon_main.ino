@@ -42,8 +42,21 @@ unsigned int ms = 1000;
 float humidity = 0.0f;
 float htu_temp = 0.0f;
 
+#ifdef GPS_SYNC_ENABLED
+// checking on Pin A1
+#define GPS_HIGH 1
+#define GPS_LOW 0
+int lastGPSState = GPS_HIGH;
+bool fixFound = false;
+int currentGPS_SyncPinStata(){
+  float voltagelvl = analogRead(GPS_SYNC_PIN) * .0049;
+  if (voltagelvl < 1.0f){ return GPS_LOW;}
+  else return GPS_HIGH;
+}
+#endif
 
-unsigned long timer=0, timer2=0;   //general purpuse timer
+
+unsigned long timer=0, timer2=0, timerGPS=0;   //general purpuse timer
 unsigned long timer_old, timer_old2;
 
 
@@ -108,11 +121,31 @@ void loop() //Main Loop
     #endif
   }
 
+// check GPS Sync Pin State every second, if two onsecutive lows are deteceted, the Fix has been found
+  #ifdef GPS_SYNC_ENABLED
+  if(!fixFound){
+    if((millis()-timerGPS)>=1000){
+      int currentState = currentGPS_SyncPinStata();
+      if((lastGPSState == currentState) && (currentState == GPS_LOW)) {
+        fixFound = true;  
+        // write some line to SD card
+        sd.writeGPSSync(sd.filename,timerGPS);
+      }
+      lastGPSState = currentState;  
+      timerGPS = millis();
+    }
+  }
+  #endif
+
 
 
   if((millis()-timer2)>=500)  // SD loop runs at 2Hz
   {
 
+    timer_old2 = timer2;
+    timer2=millis();
+
+    
     #ifdef LIGHT_ENABLED
     ms = 100;
     light.manualStart();
@@ -141,12 +174,6 @@ void loop() //Main Loop
     htu_temp = htu.readTemperature();
     #endif
 
-    timer_old2 = timer2;
-    timer2=millis();
-
-    #ifdef GPS_SYNC_ENABLED
-    // arty working on this one
-    #endif
 
     #ifdef SD_ENABLED
     dataToSD d;

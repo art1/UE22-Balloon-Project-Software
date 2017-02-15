@@ -7,6 +7,7 @@ class SDCard{
 public:
   void init();
   void writeHeader(String fn);
+  void writeGPSSync(String fn, unsigned long m);
   void writeToSD(dataToSD d, String fn);
   const String filename = "test2.csv";
 private:

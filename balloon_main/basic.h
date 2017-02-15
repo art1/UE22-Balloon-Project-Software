@@ -1,6 +1,7 @@
 #ifndef basic_h
 #define basic_h
 #include "Arduino.h"
+#include <math.h>
 #include <Wire.h>
 #include <SparkFunTSL2561.h>
 #include <Adafruit_MCP9808.h>
@@ -14,8 +15,9 @@
 //#define DALLAS_ENABLED
 #define LIGHT_ENABLED
 //#define MCP_ENABLED
-#define HUMID_ENABLED
-#define GPS_SYNC_ENABLED
+//#define HUMID_ENABLED
+//#define GPS_SYNC_ENABLED
+#define GPS_SYNC_PIN A1
 
 #define ONE_WIRE_BUS 2
 
