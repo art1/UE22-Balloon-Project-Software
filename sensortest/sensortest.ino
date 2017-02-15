@@ -6,17 +6,17 @@
 
 #define ONE_WIRE_BUS 2
 
-//OneWire oneWire(ONE_WIRE_BUS);
+OneWire oneWire(ONE_WIRE_BUS);
 
 SFE_TSL2561 light = SFE_TSL2561();
 Adafruit_MCP9808 tempsensor = Adafruit_MCP9808();
 OneWire ds(ONE_WIRE_BUS);
-//DallasTemperature Dallastempsensor(&oneWire);
+DallasTemperature Dallastempsensor(&oneWire);
 
 
 
-boolean gain;     
-unsigned int ms = 1000; 
+boolean gain = 0;     
+unsigned int ms = 100; 
 float lightsensval = 0.f; 
 float MCPtempval = 0.f;
 float Dallastempval = 0.f;
@@ -68,6 +68,7 @@ float readLightSensor() {
     double lux;    // Resulting lux value
     boolean good;  // True if neither sensor is saturated
     good = light.getLux(gain,ms,data0,data1,lux);
+    Serial.println("Lux: " + String(good) + " " + String(lux) + " " + String(data0) + ", " + String(data1));
     if (good) {
       return (float) lux;
     } else {
@@ -151,12 +152,12 @@ void setup() {
 }
 
 void loop() {
-  ms = 1000;
+  ms = 100;
   light.manualStart();
-  //tempsensor.shutdown_wake(1);
+  tempsensor.shutdown_wake(1);
   delay(ms);
   light.manualStop();
-  //tempsensor.shutdown_wake(0);
+  tempsensor.shutdown_wake(0);
 
   lightsensval = readLightSensor();
   MCPtempval = readMCPSensor();

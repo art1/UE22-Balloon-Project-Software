@@ -81,6 +81,7 @@ with MinIMU-9-Arduino-AHRS. If not, see <http://www.gnu.org/licenses/>.
 class IMU
 {
 public:
+    IMU();
     void IMUdata_Init();
     void Gyro_Init();
     void Read_Gyro();
@@ -110,7 +111,7 @@ public:
   filtered_data getFilteredData(void);
   void set_integration(float _val);
   int AN[6]; //array that stores the gyro and accelerometer data
-  int AN_OFFSET[6]={0,0,0,0,0,0}; //Array that stores the Offset of the sensors
+  int AN_OFFSET[6] = {0,0,0,0,0,0}; //Array that stores the Offset of the sensors
   int SENSOR_SIGN[9] = {1,1,1,-1,-1,-1,1,1,1}; //Correct directions x,y,z - gyro, accelerometer, magnetometer
 private:
   L3G gyro;

@@ -27,6 +27,7 @@ with MinIMU-9-Arduino-AHRS. If not, see <http://www.gnu.org/licenses/>.
 #include "IMU.h"
 
 
+
 void IMU::IMUdata_Init()
 {
   this->G_Dt=0.02;    // Integration time (DCM algorithm)  We will run the integration loop at 50Hz if possible
