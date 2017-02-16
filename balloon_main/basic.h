@@ -9,9 +9,9 @@
 #include <DallasTemperature.h>
 #include <OneWire.h>
 
-#define DEBUG_OUTPUT
+//#define DEBUG_OUTPUT
 #define IMU_ENABLED
-//#define IMU_DEBUG_OUTPUT
+#define IMU_DEBUG_OUTPUT
 //#define SD_ENABLED
 //#define DALLAS_ENABLED
 //#define LIGHT_ENABLED

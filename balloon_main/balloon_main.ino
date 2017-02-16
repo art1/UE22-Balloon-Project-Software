@@ -111,11 +111,11 @@ void loop() //Main Loop
     filtered_data filt = ahrs.getFilteredData();
     raw_data raw = ahrs.getRawData();
     Serial.print("RPY:");
-    Serial.print(ToDeg(f.roll));
+    Serial.print(ToDeg(filt.roll));
     Serial.print(",");
-    Serial.print(ToDeg(f.pitch));
+    Serial.print(ToDeg(filt.pitch));
     Serial.print(",");
-    Serial.print(ToDeg(f.yaw));
+    Serial.print(ToDeg(filt.yaw));
     Serial.println();
     #endif
     #endif
