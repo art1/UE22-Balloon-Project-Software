@@ -9,9 +9,10 @@
 #include <DallasTemperature.h>
 #include <OneWire.h>
 
-//#define DEBUG_OUTPUT
+#define DEBUG_OUTPUT
 #define IMU_ENABLED
-#define IMU_DEBUG_OUTPUT
+//#define IMU_DEBUG_OUTPUT
+
 //#define SD_ENABLED
 //#define DALLAS_ENABLED
 //#define LIGHT_ENABLED
@@ -19,7 +20,8 @@
 //#define HUMID_ENABLED
 //#define GPS_SYNC_ENABLED
 
-
+#define ToRad(x) ((x)*0.01745329252)  // *pi/180
+#define ToDeg(x) ((x)*57.2957795131)  // *180/pi
 #define GPS_SYNC_PIN A1
 #define ONE_WIRE_BUS 2
 
@@ -30,9 +32,9 @@ struct raw_data{
   int ax;
   int ay;
   int az;
-  int mx;
-  int my;
-  int mz;
+  float mx;
+  float my;
+  float mz;
 };
 
 struct filtered_data{
@@ -45,7 +47,8 @@ struct dataToSD{
   float yaw;
   float pitch;
   float roll;
-  int gx, gy, gz, ax, ay, az, mx, my, mz;
+  int gx, gy, gz, ax, ay, az;
+  float mx, my, mz;
   float temp0,temp1,temp2,temp3,temp4,temp5;
   float pressure;
   float humid;
@@ -55,9 +58,9 @@ struct dataToSD{
               temp0(0),temp1(0),temp2(0),temp3(0),temp4(0),temp5(0),pressure(0),humid(0),lum0(0),lum1(0),lum2(0) {}
 
   void filterDataToSDStruct(filtered_data f){
-    yaw = f.yaw;
-    pitch = f.pitch;
-    roll = f.roll;
+    yaw = ToDeg(f.yaw);
+    pitch = ToDeg(f.pitch);
+    roll = ToDeg(f.roll);
   }
 
   void rawDataToSDStruct(raw_data r){
@@ -69,8 +72,8 @@ struct dataToSD{
   String toString(){
     short dec = 3;
     return "" + String(yaw, dec) + "," + String(pitch, dec) + "," + String(roll, dec) + "," + String(gx) + "," +
-    String(gy) + "," + String(gz) + "," + String(ax) + "," + String(ay) + "," + String(az) + "," + String(mx) + "," +
-    String(my) + "," + String(mz) + "," + String(temp0, dec)
+    String(gy) + "," + String(gz) + "," + String(ax) + "," + String(ay) + "," + String(az) + "," + String(mx, dec) + "," +
+    String(my, dec) + "," + String(mz, dec) + "," + String(temp0, dec)
     + "," + String(temp1, dec) + "," + String(temp2, dec) + "," + String(temp3, dec) + "," + String(temp4, dec)
     + "," + String(temp4, dec) + "," + String(pressure, dec) + "," + String(humid, dec) + "," + String(lum0, dec)
     + "," + String(lum1, dec) + "," + String(lum2, dec);
