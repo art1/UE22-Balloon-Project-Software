@@ -43,7 +43,7 @@ void SDCard::writeHeader(String fn){
  *          unsigned long: current arduino time in milliseconds
  */
 void SDCard::writeGPSSync(String fn, unsigned long m){
-  String dataString = ";GPS Found at arduino time " + String(m,DEC) + " (-1 second)";
+  String dataString = ";GPS Fix Interrupt at arduino time " + String(m,DEC);
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
   File dataFile = SD.open(fn, FILE_WRITE);
