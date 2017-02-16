@@ -15,7 +15,7 @@
 #define DALLAS_ENABLED
 #define LIGHT_ENABLED
 #define MCP_ENABLED
-//#define HUMID_ENABLED
+#define HUMID_ENABLED
 //#define GPS_SYNC_ENABLED
 #define GPS_SYNC_PIN A1
 

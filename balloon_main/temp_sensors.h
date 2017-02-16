@@ -6,5 +6,4 @@ void initMCPSensor();
 float readMCPSensor();
 void initDallasSensor();
 float readDallasSensor();
-
 #endif
