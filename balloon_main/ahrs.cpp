@@ -37,7 +37,7 @@ AHRS::AHRS(){
  * initializes the IMU and calibrates the Accl and Gyro (do not touch while calibrating!)
  */
 void AHRS::ahrs_init(){
-  Serial.print("\nInitializing IMU...");
+  Serial.print(F("\nInitializing IMU..."));
   imu.IMUdata_Init();  
 
   delay(1500);
@@ -45,9 +45,9 @@ void AHRS::ahrs_init(){
   imu.Accel_Init();
   imu.Compass_Init();
   imu.Gyro_Init();
-  Serial.print("..done!\n");
+  Serial.print(F("..done!\n"));
   delay(20);
-  Serial.print("Calibrating IMU...");
+  Serial.print(F("Calibrating IMU..."));
   for(int i=0;i<32;i++)    // We take some readings...
     {
     imu.Read_Gyro();
@@ -61,9 +61,9 @@ void AHRS::ahrs_init(){
     imu.AN_OFFSET[y] = imu.AN_OFFSET[y]/32;
 
   imu.AN_OFFSET[5]-=GRAVITY*imu.SENSOR_SIGN[5];
-  delay(2000);
+  delay(200);
   counter=0;
-  Serial.print("..done!\n");
+  Serial.print(F("..done!\n"));
 
 
 }
@@ -80,7 +80,7 @@ void AHRS::ahrs_fetchData(long timer, long timer_old){
   if (timer>timer_old)
     {
       inttime = (timer-timer_old)/1000.0;    // Real time of loop run. We use this on the DCM algorithm (gyro integration time)
-      if (inttime > 0.2)
+      if (inttime > 1)
         imu.set_integration(0); // ignore integration times over 200 ms
        else imu.set_integration(inttime);
     }

@@ -6,5 +6,6 @@ void initMCPSensor();
 float readMCPSensor();
 void initDallasSensor();
 float readDallasSensor();
-
+void initBMPSensor();
+BMP180_data readBMPSensor_pressure();
 #endif

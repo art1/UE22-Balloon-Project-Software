@@ -8,17 +8,19 @@
 #include <Adafruit_HTU21DF.h>
 #include <DallasTemperature.h>
 #include <OneWire.h>
+#include <SFE_BMP180.h>
 
-//#define DEBUG_OUTPUT
+#define DEBUG_OUTPUT
 //#define IMU_ENABLED
 //#define IMU_DEBUG_OUTPUT
-
 //#define SD_ENABLED
 //#define DALLAS_ENABLED
-//#define LIGHT_ENABLED
-//#define MCP_ENABLED
-//#define HUMID_ENABLED
-#define GPS_SYNC_ENABLED
+
+#define LIGHT_ENABLED
+#define MCP_ENABLED
+#define HUMID_ENABLED
+#define BMP_ENABLED
+//#define GPS_SYNC_ENABLED
 
 #define ToRad(x) ((x)*0.01745329252)  // *pi/180
 #define ToDeg(x) ((x)*57.2957795131)  // *180/pi
@@ -75,10 +77,15 @@ struct dataToSD{
     String(gy) + "," + String(gz) + "," + String(ax) + "," + String(ay) + "," + String(az) + "," + String(mx, dec) + "," +
     String(my, dec) + "," + String(mz, dec) + "," + String(temp0, dec)
     + "," + String(temp1, dec) + "," + String(temp2, dec) + "," + String(temp3, dec) + "," + String(temp4, dec)
-    + "," + String(temp4, dec) + "," + String(pressure, dec) + "," + String(humid, dec) + "," + String(lum0, dec)
-    + "," + String(lum1, dec) + "," + String(lum2, dec);
+    + "," + String(pressure, dec) + "," + String(humid, dec) + "," + String(lum0, dec) + "," + String(lum1, dec)
+    + "," + String(lum2, dec);
   }
 };
 
-
+struct BMP180_data{
+  float T;
+  float P;
+  float alt;
+  BMP180_data(): T(-1.f), P(-1.f), alt(-1.f) {}
+};
 #endif
