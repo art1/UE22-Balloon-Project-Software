@@ -19,19 +19,28 @@ void setup()
   Serial.begin(115200);
   Serial.println("Adafruit GPS logging start test!");
 
-  // 9600 NMEA is the default baud rate for MTK - some use 4800
+
   GPS.begin(9600);
-  
+  //GPS.sendCommand(PMTK_SET_BAUD_9600);
   // You can adjust which sentences to have the module emit, below
   // Default is RMC + GGA
+  //GPS.sendCommand("$PMTK187,1,2*38");
   GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
   // Default is 1 Hz update rate
   GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);
 
+  //  GPS.sendCommand(PMTK_LOCUS_ERASE_FLASH);
+
+  int i=0;
+  while(i<5){GPS.sendCommand("$PMTK187,1,5*38");i++;}
+  
   // the nice thing about this code is you can have a timer0 interrupt go off
   // every 1 millisecond, and read data from the GPS for you. that makes the
   // loop code a heck of a lot easier!
   useInterrupt(true);
+
+
+  
 
   delay(500);
   while (true) {
@@ -43,6 +52,7 @@ void setup()
       Serial.println(" no response :(");
     }
   }
+  GPS.sendCommand("$PMTK187,1,2*38");
 }
 
 
@@ -72,6 +82,14 @@ void useInterrupt(boolean v) {
 uint32_t timer = millis();
 void loop()                     // run over and over again
 {
+
+
+  
+    GPS.LOCUS_ReadStatus();
+    Serial.print("intervall:"); Serial.println(GPS.LOCUS_interval);
+    Serial.print("mode:"); Serial.println(GPS.LOCUS_mode);
+
+
   // in case you are not using the interrupt above, you'll
   // need to 'hand query' the GPS, not suggested :(
   if (! usingInterrupt) {

@@ -48,6 +48,7 @@ All text above must be included in any redistribution
 // Can't fix position faster than 5 times a second!
 
 
+
 #define PMTK_SET_BAUD_57600 "$PMTK251,57600*2C"
 #define PMTK_SET_BAUD_9600 "$PMTK251,9600*17"
 
@@ -68,6 +69,9 @@ All text above must be included in any redistribution
 #define PMTK_LOCUS_STARTSTOPACK "$PMTK001,185,3*3C"
 #define PMTK_LOCUS_QUERY_STATUS "$PMTK183*38"
 #define PMTK_LOCUS_ERASE_FLASH "$PMTK184,1*22"
+// set logging intervall to one second
+#define PMTK_LOCUS_LOG_INTERVALL  "$PMTK187,1,15*38"
+#define PMTK_LOCUS_CONFIG_ACK "$PMTK001,187,3*3E"
 #define LOCUS_OVERLAP 0
 #define LOCUS_FULLSTOP 1
 
@@ -150,6 +154,7 @@ class Adafruit_GPS {
   boolean LOCUS_StartLogger(void);
   boolean LOCUS_StopLogger(void);
   boolean LOCUS_ReadStatus(void);
+  boolean LOCUS_setIntervall(void);
 
   uint16_t LOCUS_serial, LOCUS_records;
   uint8_t LOCUS_type, LOCUS_mode, LOCUS_config, LOCUS_interval, LOCUS_distance, LOCUS_speed, LOCUS_status, LOCUS_percent;

@@ -9,8 +9,8 @@
 #include <DallasTemperature.h>
 #include <OneWire.h>
 
-#define DEBUG_OUTPUT
-#define IMU_ENABLED
+//#define DEBUG_OUTPUT
+//#define IMU_ENABLED
 //#define IMU_DEBUG_OUTPUT
 
 //#define SD_ENABLED
@@ -18,7 +18,7 @@
 //#define LIGHT_ENABLED
 //#define MCP_ENABLED
 //#define HUMID_ENABLED
-//#define GPS_SYNC_ENABLED
+#define GPS_SYNC_ENABLED
 
 #define ToRad(x) ((x)*0.01745329252)  // *pi/180
 #define ToDeg(x) ((x)*57.2957795131)  // *180/pi

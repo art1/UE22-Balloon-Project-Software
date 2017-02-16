@@ -50,6 +50,8 @@ int lastGPSState = GPS_HIGH;
 bool fixFound = false;
 int currentGPS_SyncPinStata(){
   float voltagelvl = analogRead(GPS_SYNC_PIN) * .0049;
+  Serial.print("Voltage:");
+  Serial.println(voltagelvl);
   if (voltagelvl < 1.0f){ return GPS_LOW;}
   else return GPS_HIGH;
 }
@@ -125,11 +127,14 @@ void loop() //Main Loop
   #ifdef GPS_SYNC_ENABLED
   if(!fixFound){
     if((millis()-timerGPS)>=1000){
+      Serial.print("Checking GPS Pin");
       int currentState = currentGPS_SyncPinStata();
       if((lastGPSState == currentState) && (currentState == GPS_LOW)) {
         fixFound = true;
         // write some line to SD card
+        #ifdef SD_ENABLED
         sd.writeGPSSync(sd.filename,timerGPS);
+        #endif
       }
       lastGPSState = currentState;
       timerGPS = millis();
