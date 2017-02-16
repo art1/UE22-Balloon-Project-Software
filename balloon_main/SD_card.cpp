@@ -76,7 +76,7 @@ void SDCard::writeToSD(dataToSD d, String fn){
     dataFile.println(dataString);
     dataFile.close();
     // print to the serial port too:
-    Serial.println(dataString);
+    //Serial.println(dataString);
     this->blink();
   }
   // if the file isn't open, pop up an error:
