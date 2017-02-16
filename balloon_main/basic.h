@@ -9,16 +9,18 @@
 #include <DallasTemperature.h>
 #include <OneWire.h>
 
-//#define IMU_ENABLED
+#define DEBUG_OUTPUT
+#define IMU_ENABLED
 //#define IMU_DEBUG_OUTPUT
-#define SD_ENABLED
-#define DALLAS_ENABLED
-#define LIGHT_ENABLED
-#define MCP_ENABLED
+//#define SD_ENABLED
+//#define DALLAS_ENABLED
+//#define LIGHT_ENABLED
+//#define MCP_ENABLED
 //#define HUMID_ENABLED
 //#define GPS_SYNC_ENABLED
-#define GPS_SYNC_PIN A1
 
+
+#define GPS_SYNC_PIN A1
 #define ONE_WIRE_BUS 2
 
 struct raw_data{
@@ -52,13 +54,13 @@ struct dataToSD{
   dataToSD(): yaw(0),pitch(0),roll(0),gx(0),gy(0),gz(0),ax(0),ay(0),az(0),mx(0),my(0),mz(0),
               temp0(0),temp1(0),temp2(0),temp3(0),temp4(0),temp5(0),pressure(0),humid(0),lum0(0),lum1(0),lum2(0) {}
 
-  void filterDataToSD(filtered_data f){
+  void filterDataToSDStruct(filtered_data f){
     yaw = f.yaw;
     pitch = f.pitch;
     roll = f.roll;
   }
 
-  void rawDataToSD(raw_data r){
+  void rawDataToSDStruct(raw_data r){
     gx = r.gx; gy = r.gy; gz = r.gz;
     ax = r.ax; ay = r.ay; az = r.az;
     mx = r.mx; my = r.my; mz = r.mz;

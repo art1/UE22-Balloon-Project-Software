@@ -1,4 +1,3 @@
-
 #include "basic.h"
 #include "ahrs.h"
 #include "SD_Card.h"
@@ -41,6 +40,8 @@ unsigned int ms = 1000;
 float humidity = 0.0f;
 float htu_temp = 0.0f;
 
+dataToSD d;
+
 #ifdef GPS_SYNC_ENABLED
 // checking on Pin A1
 #define GPS_HIGH 1
@@ -67,8 +68,9 @@ void setup()
 
   #ifdef IMU_ENABLED
   ahrs.ahrs_init();
+  delay(200);
   #endif
-
+  
   #ifdef SD_ENABLED
   sd.init();
   sd.writeHeader(sd.filename);
@@ -91,7 +93,6 @@ void setup()
   #endif
 
   timer=millis();
-  delay(200);
 }
 
 
@@ -171,6 +172,11 @@ void loop() //Main Loop
     #ifdef DALLAS_ENABLED
     Dallastempval = readDallasSensor();
     #endif
+
+    #ifdef HUMID_ENABLED
+    humidity = htu.readHumidity();
+    htu_temp = htu.readTemperature();
+    #endif
   }
 
 
@@ -179,25 +185,24 @@ void loop() //Main Loop
     timer_old_sd = timer_sd;
     timer_sd=millis();
 
-    #ifdef HUMID_ENABLED
-    humidity = htu.readHumidity();
-    htu_temp = htu.readTemperature();
-    #endif
-
-    #ifdef SD_ENABLED
-    dataToSD d;
-
-    #ifdef IMU_ENABLED
-    d.filterDataToSD(ahrs.getFilteredData());
-    d.rawDataToSD(ahrs.getRawData());
-    #endif
-
+    
     d.lum0 = lightsensval;
     d.humid = humidity;
     d.temp0 = htu_temp;
     d.temp1 = MCPtempval;
     d.temp2 = Dallastempval;
+
+    #ifdef IMU_ENABLED
+    d.filterDataToSDStruct(ahrs.getFilteredData());
+    d.rawDataToSDStruct(ahrs.getRawData());
+    #endif
+
+    #ifdef SD_ENABLED
     sd.writeToSD(d, sd.filename); //writes Data to specified File
+    #endif
+
+    #ifdef DEBUG_OUTPUT
+    Serial.println(d.toString());
     #endif
   }
 

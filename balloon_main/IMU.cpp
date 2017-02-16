@@ -27,6 +27,9 @@ with MinIMU-9-Arduino-AHRS. If not, see <http://www.gnu.org/licenses/>.
 #include "IMU.h"
 
 
+IMU::IMU(){
+  
+}
 
 void IMU::IMUdata_Init()
 {

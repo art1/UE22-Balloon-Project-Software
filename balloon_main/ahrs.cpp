@@ -27,9 +27,9 @@ with MinIMU-9-Arduino-AHRS. If not, see <http://www.gnu.org/licenses/>.
 #include "ahrs.h"
 
 AHRS::AHRS(){
-  IMU imu;
   inttime = 0.02;
   counter = 0;
+  imu = IMU();
 }
 
 
