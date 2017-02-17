@@ -11,9 +11,9 @@
 #include <SFE_BMP180.h>
 
 #define DEBUG_OUTPUT
-//#define IMU_ENABLED
+#define IMU_ENABLED
 //#define IMU_DEBUG_OUTPUT
-//#define SD_ENABLED
+#define SD_ENABLED
 //#define DALLAS_ENABLED
 #define LIGHT_ENABLED
 #define MCP_ENABLED
@@ -72,7 +72,7 @@ struct dataToSD{
 
   String toString(){
     short dec = 3;
-    return "" + String(yaw, dec) + "," + String(pitch, dec) + "," + String(roll, dec) + "," + String(gx) + "," +
+    return String(millis()) + "," + String(yaw, dec) + "," + String(pitch, dec) + "," + String(roll, dec) + "," + String(gx) + "," +
     String(gy) + "," + String(gz) + "," + String(ax) + "," + String(ay) + "," + String(az) + "," + String(mx, dec) + "," +
     String(my, dec) + "," + String(mz, dec) + "," + String(temp0, dec)
     + "," + String(temp1, dec) + "," + String(temp2, dec) + "," + String(temp3, dec) + "," + String(temp4, dec)
