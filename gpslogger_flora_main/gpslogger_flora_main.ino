@@ -118,11 +118,13 @@ void loop()                     // run over and over again
     if (!GPS.parse(GPS.lastNMEA()))   // this also sets the newNMEAreceived() flag to false
       return;  // we can fail to parse a sentence in which case we should just wait for another
   }
-  if(GPS.fix && syncNow){
-    digitalWrite(GPS_SYNC_PIN,HIGH);
-    digitalWrite(LED,HIGH);
-    Serial.println("ISR triggered, Fix found");
-    syncNow = false;
+  if(GPS.fix){
+    if(syncNow){
+      digitalWrite(GPS_SYNC_PIN,HIGH);
+      digitalWrite(LED,HIGH);
+      Serial.println("ISR triggered, Fix found");
+      syncNow = false;
+    }
   }
 
   // if millis() or timer wraps around, we'll just reset it
