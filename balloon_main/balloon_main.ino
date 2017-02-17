@@ -44,6 +44,10 @@ unsigned int ms = 1000;
 float humidity = 0.0f;
 float htu_temp = 0.0f;
 
+// GPS Sync variables
+boolean gpsSynced = false;
+boolean gpsFound = false;
+
 dataToSD d;
 
 
@@ -101,11 +105,10 @@ void setup()
 
 
 void gpsSync_ISR(){
-  Serial.println("Interrupt received!");
-  #ifdef SD_ENABLED
-  sd.writeGPSSync(sd.filename,millis());
+  //Serial.println("Interrupt received!");
+  #ifdef GPS_SYNC_ENABLED
+  gpsFound = true;
   #endif
-  delay(20);
 }
 
 
@@ -164,6 +167,12 @@ void loop() //Main Loop
     #endif
 
     #ifdef SD_ENABLED
+    #ifdef GPS_SYNC_ENABLED
+    if(gpsFound && !gpsSynced){
+      sd.writeGPSSync(sd.filename,millis());
+      gpsSynced = true;
+    }
+    #endif
     sd.writeToSD(d, sd.filename); //writes Data to specified File
     #endif
 
