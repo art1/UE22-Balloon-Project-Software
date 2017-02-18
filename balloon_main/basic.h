@@ -11,19 +11,19 @@
 #include <SFE_BMP180.h>
 
 #define DEBUG_OUTPUT
-#define IMU_ENABLED
+//#define IMU_ENABLED
 //#define IMU_DEBUG_OUTPUT
 #define SD_ENABLED
 //#define DALLAS_ENABLED
-#define LIGHT_ENABLED
+//#define LIGHT_ENABLED
 #define MCP_ENABLED
-#define HUMID_ENABLED
-#define BMP_ENABLED
+//#define HUMID_ENABLED
+//#define BMP_ENABLED
 //#define GPS_SYNC_ENABLED
 
 #define ToRad(x) ((x)*0.01745329252)  // *pi/180
 #define ToDeg(x) ((x)*57.2957795131)  // *180/pi
-#define GPS_SYNC_PIN A1
+#define GPS_SYNC_PIN 3
 #define ONE_WIRE_BUS 2
 
 struct raw_data{
