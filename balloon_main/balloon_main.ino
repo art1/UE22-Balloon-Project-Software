@@ -105,7 +105,7 @@ void setup()
 
 
 void gpsSync_ISR(){
-  //Serial.println("Interrupt received!");
+  Serial.println("Interrupt received!");
   #ifdef GPS_SYNC_ENABLED
   gpsFound = true;
   #endif
@@ -168,9 +168,11 @@ void loop() //Main Loop
 
     #ifdef SD_ENABLED
     #ifdef GPS_SYNC_ENABLED
-    if(gpsFound && !gpsSynced){
-      sd.writeGPSSync(sd.filename,millis());
-      gpsSynced = true;
+    if(gpsFound){
+      if(!gpsSynced){
+        sd.writeGPSSync(sd.filename,millis());  
+        gpsSynced = true;
+      }     
     }
     #endif
     sd.writeToSD(d, sd.filename); //writes Data to specified File
