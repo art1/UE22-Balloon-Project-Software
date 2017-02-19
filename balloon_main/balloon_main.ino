@@ -86,7 +86,7 @@ void setup()
   #ifdef LIGHT_ENABLED
   initLightSensor0();
   #endif
-  
+
   #ifdef LIGHT2_ENABLED
   initLightSensor1();
   #endif
@@ -94,7 +94,7 @@ void setup()
   #ifdef MCP_ENABLED
   initMCPSensor0();
   #endif
-  
+
   #ifdef MCP2_ENABLED
   initMCPSensor1();
   #endif
@@ -118,7 +118,7 @@ void setup()
 
   #ifdef GPS_SYNC_ENABLED
   pinMode(GPS_SYNC_PIN,INPUT);
-  digitalWrite(GPS_SYNC_PIN,HIGH);
+  digitalWrite(GPS_SYNC_PIN,LOW);
   delay(100);
   attachInterrupt(digitalPinToInterrupt(GPS_SYNC_PIN),gpsSync_ISR,LOW);
   delay(100);
@@ -210,13 +210,13 @@ void loop() //Main Loop
         Serial.println(" GPS Synced!!");
         #endif
         #ifdef SD_ENABLED
-        sd.writeGPSSync(sd.filename,millis());  
+        sd.writeGPSSync(sd.filename,millis());
         #endif
         gpsSynced = true;
-      }     
+      }
     }
     #endif
-    
+
     #ifdef SD_ENABLED
     sd.writeToSD(d, sd.filename); //writes Data to specified File
     #endif
@@ -235,11 +235,11 @@ void loop() //Main Loop
     #ifdef MCP_ENABLED
     MCPtempval0 = readMCPSensor0();
     #endif
-    
+
     #ifdef MCP2_ENABLED
     MCPtempval1 = readMCPSensor1();
     #endif
-    
+
     #if defined(MCP_ENABLED) || defined(MCP2_ENABLED)
     delay(250);
     #endif
@@ -247,7 +247,7 @@ void loop() //Main Loop
     #ifdef LIGHT_ENABLED
     light0.manualStart();
     #endif
-    
+
     #ifdef LIGHT2_ENABLED
     light1.manualStart();
     #endif
@@ -255,7 +255,7 @@ void loop() //Main Loop
     #ifdef MCP_ENABLED
     tempsensor0.shutdown_wake(1);
     #endif
-    
+
     #ifdef MCP2_ENABLED
     tempsensor1.shutdown_wake(1);
     #endif
@@ -270,11 +270,11 @@ void loop() //Main Loop
     #ifdef LIGHT2_ENABLED
     light1.manualStop();
     #endif
-    
+
     #ifdef MCP_ENABLED
     tempsensor0.shutdown_wake(0);
     #endif
-    
+
     #ifdef MCP2_ENABLED
     tempsensor1.shutdown_wake(0);
     #endif
@@ -282,7 +282,7 @@ void loop() //Main Loop
     #ifdef LIGHT_ENABLED
     lightsensval0 = readLightSensor0();
     #endif
-    
+
     #ifdef LIGHT2_ENABLED
     lightsensval1 = readLightSensor1();
     #endif
