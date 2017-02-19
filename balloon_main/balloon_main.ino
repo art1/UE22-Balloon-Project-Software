@@ -33,6 +33,10 @@ Adafruit_HTU21DF htu = Adafruit_HTU21DF();
 SFE_BMP180 pressure;
 #endif
 
+#ifdef MS_ENABLED
+MS5611 ms5611;
+#endif
+
 //MCP and Dallas variables
 float lightsensval = 0.f;
 float MCPtempval = 0.f;
@@ -99,7 +103,11 @@ void setup()
   pinMode(GPS_SYNC_PIN,INPUT);
   attachInterrupt(digitalPinToInterrupt(GPS_SYNC_PIN),gpsSync_ISR,HIGH);
   #endif
-  
+
+  #ifdef MS_ENABLED
+  initMSSensor();
+  #endif
+
   timer=millis();
 }
 
@@ -114,8 +122,8 @@ void gpsSync_ISR(){
 
 void loop() //Main Loop
 {
-  BMP180_data bmp;
-
+  pressure_data bmp;
+  pressure_data ms1;
   if((millis()-timer)>=20)  // AHRS loop runs at 50Hz
   {
     //Serial.println(String(millis() - timer_old));
@@ -151,16 +159,19 @@ void loop() //Main Loop
 
     d.lum0 = lightsensval;
     d.humid = humidity;
-    d.temp0 = htu_temp;
-    d.temp1 = MCPtempval;
+    d.temp3 = htu_temp;
+    d.temp0 = MCPtempval;
 
     #ifdef BMP_ENABLED
     bmp = readBMPSensor_pressure();
+    d.pressureDataToSDStruct(bmp,FALSE);
     #endif
 
-    d.temp2 = bmp.P;
-    d.temp3 = bmp.T;
-    d.temp4 = bmp.alt;
+    #ifdef MS_ENABLED
+    ms1 = readMSSensor();
+    d.pressureDataToSDStruct(ms1,TRUE);
+    #endif
+
     #ifdef IMU_ENABLED
     d.filterDataToSDStruct(ahrs.getFilteredData());
     d.rawDataToSDStruct(ahrs.getRawData());
@@ -183,8 +194,9 @@ void loop() //Main Loop
     #endif
   }
 
-  if((millis()-timer_mcp)>=100)  // SD loop runs at 2Hz
+  if((millis()-timer_mcp)>=100)  // Measurement loop runs at 10Hz
   {
+
     timer_old_mcp = timer_mcp;
     timer_mcp=millis();
 
@@ -224,6 +236,7 @@ void loop() //Main Loop
     humidity = htu.readHumidity();
     htu_temp = htu.readTemperature();
     #endif
+
 
   }
 
