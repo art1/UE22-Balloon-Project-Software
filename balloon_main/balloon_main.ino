@@ -18,11 +18,20 @@ DallasTemperature Dallastempsensor(&oneWire);
 #endif
 
 #ifdef MCP_ENABLED
-Adafruit_MCP9808 tempsensor = Adafruit_MCP9808();
+Adafruit_MCP9808 tempsensor0 = Adafruit_MCP9808();
+#endif
+
+
+#ifdef MCP2_ENABLED
+Adafruit_MCP9808 tempsensor1 = Adafruit_MCP9808();
 #endif
 
 #ifdef LIGHT_ENABLED
-SFE_TSL2561 light = SFE_TSL2561();
+SFE_TSL2561 light0 = SFE_TSL2561();
+#endif
+
+#ifdef LIGHT2_ENABLED
+SFE_TSL2561 light1 = SFE_TSL2561();
 #endif
 
 #ifdef HUMID_ENABLED
@@ -33,9 +42,13 @@ Adafruit_HTU21DF htu = Adafruit_HTU21DF();
 SFE_BMP180 pressure;
 #endif
 
+#ifdef MS_ENABLED
+MS5611 ms5611;
+#endif
+
 //MCP and Dallas variables
-float lightsensval = 0.f;
-float MCPtempval = 0.f;
+float lightsensval0 = 0.f, lightsensval1 = 0.f;
+float MCPtempval0 = 0.f, MCPtempval1 = 0.f;
 float Dallastempval = 0.f;
 boolean gain;
 unsigned int ms = 1000;
@@ -71,11 +84,19 @@ void setup()
   #endif
 
   #ifdef LIGHT_ENABLED
-  initLightSensor();
+  initLightSensor0();
+  #endif
+  
+  #ifdef LIGHT2_ENABLED
+  initLightSensor1();
   #endif
 
   #ifdef MCP_ENABLED
-  initMCPSensor();
+  initMCPSensor0();
+  #endif
+  
+  #ifdef MCP2_ENABLED
+  initMCPSensor1();
   #endif
 
   #ifdef DALLAS_ENABLED
@@ -102,7 +123,11 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(GPS_SYNC_PIN),gpsSync_ISR,LOW);
   delay(100);
   #endif
-  
+
+  #ifdef MS_ENABLED
+  initMSSensor();
+  #endif
+
   timer=millis();
 }
 
@@ -116,8 +141,8 @@ void gpsSync_ISR(){
 
 void loop() //Main Loop
 {
-  BMP180_data bmp;
-
+  pressure_data bmp;
+  pressure_data ms1;
   if((millis()-timer)>=20)  // AHRS loop runs at 50Hz
   {
     //Serial.println(String(millis() - timer_old));
@@ -151,18 +176,24 @@ void loop() //Main Loop
     timer_sd=millis();
 
 
-    d.lum0 = lightsensval;
+    d.lum0 = lightsensval0;
+    d.lum1 = lightsensval1;
     d.humid = humidity;
-    d.temp0 = htu_temp;
-    d.temp1 = MCPtempval;
+    d.temp2 = htu_temp;
+    d.temp0 = MCPtempval0;
+    d.temp1 = MCPtempval1;
+
 
     #ifdef BMP_ENABLED
     bmp = readBMPSensor_pressure();
+    d.pressureDataToSDStruct(bmp,FALSE);
     #endif
 
-    d.temp2 = bmp.P;
-    d.temp3 = bmp.T;
-    d.temp4 = bmp.alt;
+    #ifdef MS_ENABLED
+    ms1 = readMSSensor();
+    d.pressureDataToSDStruct(ms1,TRUE);
+    #endif
+
     #ifdef IMU_ENABLED
     d.filterDataToSDStruct(ahrs.getFilteredData());
     d.rawDataToSDStruct(ahrs.getRawData());
@@ -191,37 +222,65 @@ void loop() //Main Loop
     #endif
   }
 
-  if((millis()-timer_mcp)>=100)  // SD loop runs at 2Hz
+  if((millis()-timer_mcp)>=100)  // Measurement loop runs at 10Hz
   {
+
     timer_old_mcp = timer_mcp;
     timer_mcp=millis();
 
     #ifdef MCP_ENABLED
-    MCPtempval = readMCPSensor();
+    MCPtempval0 = readMCPSensor0();
+    #endif
+    
+    #ifdef MCP2_ENABLED
+    MCPtempval1 = readMCPSensor1();
+    #endif
+    
+    #if defined(MCP_ENABLED) || defined(MCP2_ENABLED)
     delay(250);
     #endif
 
     #ifdef LIGHT_ENABLED
-    light.manualStart();
+    light0.manualStart();
+    #endif
+    
+    #ifdef LIGHT2_ENABLED
+    light1.manualStart();
     #endif
 
     #ifdef MCP_ENABLED
-    tempsensor.shutdown_wake(1);
+    tempsensor0.shutdown_wake(1);
+    #endif
+    
+    #ifdef MCP2_ENABLED
+    tempsensor1.shutdown_wake(1);
     #endif
 
     ms = 100;
     delay(ms); //This should be moved
 
     #ifdef LIGHT_ENABLED
-    light.manualStop();
+    light0.manualStop();
     #endif
 
+    #ifdef LIGHT2_ENABLED
+    light1.manualStop();
+    #endif
+    
     #ifdef MCP_ENABLED
-    tempsensor.shutdown_wake(0);
+    tempsensor0.shutdown_wake(0);
+    #endif
+    
+    #ifdef MCP2_ENABLED
+    tempsensor1.shutdown_wake(0);
     #endif
 
     #ifdef LIGHT_ENABLED
-    lightsensval = readLightSensor();
+    lightsensval0 = readLightSensor0();
+    #endif
+    
+    #ifdef LIGHT2_ENABLED
+    lightsensval1 = readLightSensor1();
     #endif
 
     #ifdef DALLAS_ENABLED
@@ -232,6 +291,7 @@ void loop() //Main Loop
     humidity = htu.readHumidity();
     htu_temp = htu.readTemperature();
     #endif
+
 
   }
 
