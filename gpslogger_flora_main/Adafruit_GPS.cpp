@@ -13,7 +13,7 @@ All text above must be included in any redistribution
   // Only include software serial on AVR platforms (i.e. not on Due).
   #include <SoftwareSerial.h>
 #endif
-#include "Adafruit_GPS_mod.h"
+#include "Adafruit_GPS.h"
 
 // how long are max NMEA lines to parse?
 #define MAXLINELENGTH 120
@@ -408,7 +408,7 @@ boolean Adafruit_GPS::waitForSentence(const char *wait4me, uint8_t max) {
       strncpy(str, nmea, 20);
       str[19] = 0;
       i++;
-      
+
       if (strstr(str, wait4me))
 	return true;
     }
@@ -427,33 +427,6 @@ boolean Adafruit_GPS::LOCUS_StopLogger(void) {
   sendCommand(PMTK_LOCUS_STOPLOG);
   recvdflag = false;
   return waitForSentence(PMTK_LOCUS_STARTSTOPACK);
-}
-
-boolean Adafruit_GPS::LOCUS_setIntervall(void){
-  sendCommand(PMTK_LOCUS_LOG_INTERVALL);
-  recvdflag = false;
-/*
-  char str[20];
-  const char * wait4me = PMTK_LOCUS_CONFIG_ACK; 
-  uint8_t i=0;
-  uint8_t max;
-  while (i < max) {
-    Serial.println("...");
-    if (newNMEAreceived()) { 
-      char *nmea = lastNMEA();
-      strncpy(str, nmea, 20);
-      str[19] = 0;
-      i++;
-      
-      if (strstr(str, wait4me))
-        return true;
-    } else {
-      sendCommand(PMTK_LOCUS_LOG_INTERVALL);
-      Serial.println("sending");
-    }
-  }
-*/
-  return true;
 }
 
 boolean Adafruit_GPS::LOCUS_ReadStatus(void) {

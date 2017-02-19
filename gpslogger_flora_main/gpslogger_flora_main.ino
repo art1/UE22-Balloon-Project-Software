@@ -1,5 +1,9 @@
+//#include <Adafruit_GPS.h>
+
 #include <SoftwareSerial.h>
-#include "Adafruit_GPS_mod.h"
+//#include "Adafruit_GPS_mod.h"
+#include "Adafruit_GPS.h"
+
 
 Adafruit_GPS GPS(&Serial1);
 
@@ -28,7 +32,6 @@ void setup()
   //GPS.sendCommand(PMTK_SET_BAUD_9600);
   // You can adjust which sentences to have the module emit, below
   // Default is RMC + GGA
-  //GPS.sendCommand("$PMTK187,1,2*38");
   GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
   // Default is 1 Hz update rate
   GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);
@@ -92,10 +95,11 @@ void loop()                     // run over and over again
 {
 
 
-  
-    GPS.LOCUS_ReadStatus();
+    delay(500);
+    /*GPS.LOCUS_ReadStatus();
     Serial.print("intervall:"); Serial.println(GPS.LOCUS_interval);
     Serial.print("mode:"); Serial.println(GPS.LOCUS_mode);
+    */
     Serial.print("gps sync: "); Serial.println(digitalRead(GPS_SYNC_PIN));
 
   // in case you are not using the interrupt above, you'll
@@ -115,8 +119,10 @@ void loop()                     // run over and over again
     // so be very wary if using OUTPUT_ALLDATA and trytng to print out data
     //Serial.println(GPS.lastNMEA());   // this also sets the newNMEAreceived() flag to false
   
-    if (!GPS.parse(GPS.lastNMEA()))   // this also sets the newNMEAreceived() flag to false
+    if (!GPS.parse(GPS.lastNMEA())){   // this also sets the newNMEAreceived() flag to false
+      Serial.println("failed to parse!");
       return;  // we can fail to parse a sentence in which case we should just wait for another
+    }
   }
   if(GPS.fix){
     if(syncNow){
@@ -147,7 +153,7 @@ void loop()                     // run over and over again
     Serial.println(GPS.year, DEC);
     Serial.print("Fix: "); Serial.print((int)GPS.fix);
     Serial.print(" quality: "); Serial.println((int)GPS.fixquality); 
-    if (GPS.fix) {
+    if (true) {
       Serial.print("Location: ");
       Serial.print(GPS.latitude, 4); Serial.print(GPS.lat);
       Serial.print(", "); 

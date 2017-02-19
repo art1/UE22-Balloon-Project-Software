@@ -97,7 +97,10 @@ void setup()
 
   #ifdef GPS_SYNC_ENABLED
   pinMode(GPS_SYNC_PIN,INPUT);
-  attachInterrupt(digitalPinToInterrupt(GPS_SYNC_PIN),gpsSync_ISR,HIGH);
+  digitalWrite(GPS_SYNC_PIN,LOW);
+  delay(100);
+  attachInterrupt(digitalPinToInterrupt(GPS_SYNC_PIN),gpsSync_ISR,LOW);
+  delay(100);
   #endif
   
   timer=millis();
@@ -105,7 +108,6 @@ void setup()
 
 
 void gpsSync_ISR(){
-  Serial.println("Interrupt received!");
   #ifdef GPS_SYNC_ENABLED
   gpsFound = true;
   #endif
@@ -166,15 +168,21 @@ void loop() //Main Loop
     d.rawDataToSDStruct(ahrs.getRawData());
     #endif
 
-    #ifdef SD_ENABLED
     #ifdef GPS_SYNC_ENABLED
     if(gpsFound){
+        Serial.println("Interrupt received!");
+        Serial.println(digitalRead(GPS_SYNC_PIN));
       if(!gpsSynced){
+        Serial.println(" GPS Synced!!");
+        #ifdef SD_ENABLED
         sd.writeGPSSync(sd.filename,millis());  
+        #endif
         gpsSynced = true;
       }     
     }
     #endif
+    
+    #ifdef SD_ENABLED
     sd.writeToSD(d, sd.filename); //writes Data to specified File
     #endif
 
