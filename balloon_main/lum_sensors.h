@@ -3,7 +3,9 @@
 #include "basic.h"
 
 
-void initLightSensor();
-float readLightSensor();
+void initLightSensor0();
+float readLightSensor0();
+void initLightSensor1();
+float readLightSensor1();
 
 #endif

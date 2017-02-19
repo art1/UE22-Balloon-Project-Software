@@ -2,7 +2,7 @@
 
 byte addr[8];
 #ifdef MCP_ENABLED
-extern Adafruit_MCP9808 tempsensor;
+extern Adafruit_MCP9808 tempsensor0;
 #endif
 
 #ifdef DALLAS_ENABLED
@@ -20,22 +20,34 @@ extern SFE_BMP180 pressure;
 extern MS5611 ms5611;
 #endif
 
+#ifdef MCP2_ENABLED
+#define MCP9808_I2CADDR_A1             0x1A
+extern Adafruit_MCP9808 tempsensor1;
+#endif
+
 
 #ifdef MCP_ENABLED
-void initMCPSensor() {
-  if (!tempsensor.begin()) {
-    Serial.println("Couldn't find MCP9808!");
+void initMCPSensor0() {
+  if (!tempsensor0.begin()) {
+    Serial.println("Couldn't find first MCP9808!");
   }
 }
 
-float readMCPSensor() {
-  float c = tempsensor.readTempC();
-  /* delay(250);
-  tempsensor.shutdown_wake(1); // shutdown MSP9808 - power consumption ~0.1 mikro Ampere
-  
-  delay(100);
-  
-  tempsensor.shutdown_wake(0);*/
+float readMCPSensor0() {
+  float c = tempsensor0.readTempC();
+  return c;
+}
+#endif
+
+#ifdef MCP2_ENABLED
+void initMCPSensor1() {
+  if (!tempsensor1.begin(MCP9808_I2CADDR_A1)) {
+    Serial.println("Couldn't find second MCP9808!");
+  }
+}
+
+float readMCPSensor1() {
+  float c = tempsensor1.readTempC();
   return c;
 }
 #endif
@@ -156,7 +168,6 @@ pressure_data readBMPSensor_pressure(){
 
 #ifdef MS_ENABLED
 void initMSSensor(){
-  Serial.println(F("Test1.6"));
   if(!ms5611.begin()) Serial.println("MS5611 init fail");
 }
 

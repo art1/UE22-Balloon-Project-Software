@@ -2,8 +2,10 @@
 #define temp_sensors_h
 #include "basic.h"
 
-void initMCPSensor();
-float readMCPSensor();
+void initMCPSensor0();
+void initMCPSensor1();
+float readMCPSensor0();
+float readMCPSensor1();
 void initDallasSensor();
 float readDallasSensor();
 void initBMPSensor();
