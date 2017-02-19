@@ -118,7 +118,7 @@ void setup()
 
   #ifdef GPS_SYNC_ENABLED
   pinMode(GPS_SYNC_PIN,INPUT);
-  digitalWrite(GPS_SYNC_PIN,LOW);
+  digitalWrite(GPS_SYNC_PIN,HIGH);
   delay(100);
   attachInterrupt(digitalPinToInterrupt(GPS_SYNC_PIN),gpsSync_ISR,LOW);
   delay(100);
@@ -201,10 +201,14 @@ void loop() //Main Loop
 
     #ifdef GPS_SYNC_ENABLED
     if(gpsFound){
+        #ifdef DEBUG_OUTPUT
         Serial.println("Interrupt received!");
         Serial.println(digitalRead(GPS_SYNC_PIN));
+        #endif
       if(!gpsSynced){
+        #ifdef DEBUG_OUTPUT
         Serial.println(" GPS Synced!!");
+        #endif
         #ifdef SD_ENABLED
         sd.writeGPSSync(sd.filename,millis());  
         #endif
