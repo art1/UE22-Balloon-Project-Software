@@ -124,7 +124,7 @@ void loop()                     // run over and over again
       return;  // we can fail to parse a sentence in which case we should just wait for another
     }
   }
-  if(GPS.fix){
+  if(GPS.fix || (GPS.fixquality > 0)){
     if(syncNow){
       digitalWrite(GPS_SYNC_PIN,HIGH);
       digitalWrite(LED,HIGH);

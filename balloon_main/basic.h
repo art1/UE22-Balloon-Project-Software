@@ -15,14 +15,16 @@
 #define IMU_ENABLED
 //#define IMU_DEBUG_OUTPUT
 #define SD_ENABLED
+// not using Dallas !!!!
 //#define DALLAS_ENABLED
+// !!!!
 #define LIGHT_ENABLED
 #define LIGHT2_ENABLED
 #define MCP_ENABLED
 #define MCP2_ENABLED
 #define HUMID_ENABLED
 #define BMP_ENABLED
-//#define GPS_SYNC_ENABLED
+#define GPS_SYNC_ENABLED
 #define MS_ENABLED
 
 #define ToRad(x) ((x)*0.01745329252)  // *pi/180
@@ -72,9 +74,11 @@ struct dataToSD{
   float press0, temp3, alt0;
   //1x MS5611
   float press1, temp4, alt1;
+  // GPS Fix Synchronisation PIN
+  int gpsFix;
 
   dataToSD(): yaw(0),pitch(0),roll(0),gx(0),gy(0),gz(0),ax(0),ay(0),az(0),mx(0),my(0),mz(0),
-              temp0(0),temp1(0),temp2(0),temp3(0),temp4(0),press0(0),press1(0),alt0(0),alt1(0),humid(0),lum0(0),lum1(0) {}
+              temp0(0),temp1(0),temp2(0),temp3(0),temp4(0),press0(0),press1(0),alt0(0),alt1(0),humid(0),lum0(0),lum1(0),gpsFix(0) {}
 
 /* Functions that copy struct data to SD struct in order
  * to save it to the given file.
@@ -111,7 +115,7 @@ struct dataToSD{
     String(gy) + "," + String(gz) + "," + String(ax) + "," + String(ay) + "," + String(az) + "," + String(mx, dec) + "," +
     String(my, dec) + "," + String(mz, dec) + "," + String(temp0, dec) + "," + String(temp1, dec) + "," + String(temp2, dec) + "," +
     String(temp3, dec) + "," + String(temp4, dec) + "," + String(press0, dec) + "," + String(press1, dec) + "," +
-    String(alt0, dec) + "," + String(alt1, dec) + "," + String(humid, dec) + "," + String(lum0, dec) + "," + String(lum1, dec);
+    String(alt0, dec) + "," + String(alt1, dec) + "," + String(humid, dec) + "," + String(lum0, dec) + "," + String(lum1, dec) + "," + String(gpsFix);
   }
 };
 
