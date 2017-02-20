@@ -57,11 +57,16 @@ unsigned int ms = 1000;
 float humidity = 0.0f;
 float htu_temp = 0.0f;
 
-// GPS Sync variables
-boolean gpsSynced = false;
-boolean gpsFound = false;
+
+#ifdef GPS_SYNC_ENABLED
+int currentGPS_SyncPinState(){
+  return digitalRead(GPS_SYNC_PIN);
+}
+#endif
+
 
 dataToSD d;
+
 
 
 unsigned long timer=0, timer_sd=0, timer_dallas=0, timer_mcp=0, timerGPS=0;   //general purpuse timer
@@ -118,10 +123,7 @@ void setup()
 
   #ifdef GPS_SYNC_ENABLED
   pinMode(GPS_SYNC_PIN,INPUT);
-  digitalWrite(GPS_SYNC_PIN,LOW);
-  delay(100);
-  attachInterrupt(digitalPinToInterrupt(GPS_SYNC_PIN),gpsSync_ISR,LOW);
-  delay(100);
+  digitalWrite(GPS_SYNC_PIN,HIGH);
   #endif
 
   #ifdef MS_ENABLED
@@ -129,13 +131,6 @@ void setup()
   #endif
 
   timer=millis();
-}
-
-
-void gpsSync_ISR(){
-  #ifdef GPS_SYNC_ENABLED
-  gpsFound = true;
-  #endif
 }
 
 
@@ -199,22 +194,10 @@ void loop() //Main Loop
     d.rawDataToSDStruct(ahrs.getRawData());
     #endif
 
+
     #ifdef GPS_SYNC_ENABLED
-    if(gpsFound){
-        #ifdef DEBUG_OUTPUT
-        Serial.println("Interrupt received!");
-        Serial.println(digitalRead(GPS_SYNC_PIN));
-        #endif
-      if(!gpsSynced){
-        #ifdef DEBUG_OUTPUT
-        Serial.println(" GPS Synced!!");
-        #endif
-        #ifdef SD_ENABLED
-        sd.writeGPSSync(sd.filename,millis());
-        #endif
-        gpsSynced = true;
-      }
-    }
+    int fix = currentGPS_SyncPinState();
+    d.gpsFix = fix;
     #endif
 
     #ifdef SD_ENABLED

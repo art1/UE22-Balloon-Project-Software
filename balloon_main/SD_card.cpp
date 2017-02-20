@@ -53,11 +53,11 @@ void SDCard::writeGPSSync(String fn, unsigned long m){
     dataFile.println(dataString);
     dataFile.close();
     // print to the serial port too:
-    Serial.println(dataString);
+    //Serial.println(dataString);
   }
   // if the file isn't open, pop up an error:
   else {
-    Serial.println("error opening " + fn);
+    //Serial.println("error opening " + fn);
   }
 }
 
