@@ -77,6 +77,19 @@ void software_Reset() // Restarts program from beginning but does not reset the 
 asm volatile ("  jmp 0");
 }
 
+
+void runIMUIntegration(){
+    #ifdef IMU_ENABLED
+    if((millis()-timer)>=20)  // AHRS loop runs at 50Hz
+    {
+      timer_old = timer;
+      timer=millis();
+      ahrs.ahrs_fetchData(timer,timer_old);
+    }
+    #endif
+}
+
+
 void setup()
 {
   Serial.begin(115200);
@@ -138,29 +151,23 @@ void loop() //Main Loop
 {
   pressure_data bmp;
   pressure_data ms1;
-  if((millis()-timer)>=20)  // AHRS loop runs at 50Hz
-  {
-    //Serial.println(String(millis() - timer_old));
-    timer_old = timer;
-    timer=millis();
+  #ifdef IMU_ENABLED
 
-    #ifdef IMU_ENABLED
-    ahrs.ahrs_fetchData(timer,timer_old);
+  runIMUIntegration();
 
-    #ifdef IMU_DEBUG_OUTPUT
-    filtered_data filt = ahrs.getFilteredData();
-    raw_data raw = ahrs.getRawData();
-    Serial.print("RPY:");
-    Serial.print(ToDeg(filt.roll));
-    Serial.print(",");
-    Serial.print(ToDeg(filt.pitch));
-    Serial.print(",");
-    Serial.print(ToDeg(filt.yaw));
-    Serial.println();
-    #endif
-    #endif
-    //Serial.println("Test1");
-  }
+  #ifdef IMU_DEBUG_OUTPUT
+  filtered_data filt = ahrs.getFilteredData();
+  raw_data raw = ahrs.getRawData();
+  Serial.print("RPY:");
+  Serial.print(ToDeg(filt.roll));
+  Serial.print(",");
+  Serial.print(ToDeg(filt.pitch));
+  Serial.print(",");
+  Serial.print(ToDeg(filt.yaw));
+  Serial.println();
+  #endif
+
+  #endif
 
 
 
@@ -197,12 +204,16 @@ void loop() //Main Loop
 
     #ifdef GPS_SYNC_ENABLED
     int fix = currentGPS_SyncPinState();
+    if(fix == 0) fix = 1;
+    else if(fix == 1) fix = 0;
     d.gpsFix = fix;
     #endif
 
     #ifdef SD_ENABLED
     sd.writeToSD(d, sd.filename); //writes Data to specified File
     #endif
+
+    //runIMUIntegration();
 
     #ifdef DEBUG_OUTPUT
     Serial.println(d.toString());
@@ -223,9 +234,13 @@ void loop() //Main Loop
     MCPtempval1 = readMCPSensor1();
     #endif
 
+    //runIMUIntegration();
+
     #if defined(MCP_ENABLED) || defined(MCP2_ENABLED)
     delay(250);
     #endif
+
+    //runIMUIntegration();
 
     #ifdef LIGHT_ENABLED
     light0.manualStart();
@@ -245,6 +260,8 @@ void loop() //Main Loop
 
     ms = 100;
     delay(ms); //This should be moved
+
+    //runIMUIntegration();
 
     #ifdef LIGHT_ENABLED
     light0.manualStop();
@@ -273,6 +290,8 @@ void loop() //Main Loop
     #ifdef DALLAS_ENABLED
     Dallastempval = readDallasSensor();
     #endif
+
+    //runIMUIntegration();
 
     #ifdef HUMID_ENABLED
     humidity = htu.readHumidity();

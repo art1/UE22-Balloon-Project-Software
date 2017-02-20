@@ -61,38 +61,38 @@ void initDallasSensor() {
 
 float readDallasSensor() {
   //returns the temperature from one DS18S20 in DEG Celsius
-  
+
   byte data[12];
-  
+
   if ( OneWire::crc8( addr, 7) != addr[7]) {
     Serial.println("CRC is not valid!");
     return -1000;
   }
-  
+
   if ( addr[0] != 0x10 && addr[0] != 0x28) {
     Serial.print("Device is not recognized");
     return -1000;
   }
-  
+
   ds.reset();
   ds.select(addr);
   ds.write(0x44,1); // start conversion, with parasite power on at the end
-  
+
   delay(750); // Wait for temperature conversion to complete
-  
+
   byte present = ds.reset();
-  ds.select(addr);  
+  ds.select(addr);
   ds.write(0xBE); // Read Scratchpad
-  
-  
+
+
   for (int i = 0; i < 9; i++) { // we need 9 bytes
     data[i] = ds.read();
   }
-  
+
   ds.reset_search();
-  
+
   float TemperatureSum = ((float)((data[1] << 8) | data[0])) * 0.0625 + 21;
-  
+
   return TemperatureSum;
 }
 #endif
@@ -122,7 +122,7 @@ pressure_data readBMPSensor_pressure(){
     delay(status);
     // Retrieve the completed temperature measurement:
     // Note that the measurement is stored in the variable T.
-    // Function returns 1 if successful, 0 if failure.  
+    // Function returns 1 if successful, 0 if failure.
     status = pressure.getTemperature(T);
     if (status != 0)
     {
@@ -130,7 +130,7 @@ pressure_data readBMPSensor_pressure(){
       // Start a pressure measurement:
       // The parameter is the oversampling setting, from 0 to 3 (highest res, longest wait).
       // If request is successful, the number of ms to wait is returned.
-      // If request is unsuccessful, 0 is returned.  
+      // If request is unsuccessful, 0 is returned.
       status = pressure.startPressure(3);
       if (status != 0)
       {
@@ -149,7 +149,7 @@ pressure_data readBMPSensor_pressure(){
           // To remove the effects of altitude, use the sealevel function and your current altitude.
           // This number is commonly used in weather reports.
           // Parameters: P = absolute pressure in mb, ALTITUDE = current altitude in m.
-          // Result: p0 = sea-level compensated pressure in mb        
+          // Result: p0 = sea-level compensated pressure in mb
           p0 = pressure.sealevel(P,ALTITUDE);
           a = pressure.altitude(P,p0);
           d.alt = (float) a;
