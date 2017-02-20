@@ -204,6 +204,8 @@ void loop() //Main Loop
 
     #ifdef GPS_SYNC_ENABLED
     int fix = currentGPS_SyncPinState();
+    if(fix == 0) fix = 1;
+    else if(fix == 1) fix = 0;
     d.gpsFix = fix;
     #endif
 
