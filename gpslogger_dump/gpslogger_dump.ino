@@ -12,7 +12,7 @@ boolean usingInterrupt = false;
 
 void setup()  
 { 
-  while (!Serial);
+  //while (!Serial);
   // connect at 115200 so we can read the GPS fast enuf and
   // also spit it out
   Serial.begin(115200);
