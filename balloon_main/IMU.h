@@ -114,25 +114,25 @@ public:
 private:
   L3G gyro;
   LSM303 compass;
-  float G_Dt;
+  float G_Dt = 0.0f;
 
   
   long timer24=0; //Second timer used to print values
 
 
-  int gyro_x;
-  int gyro_y;
-  int gyro_z;
-  int accel_x;
-  int accel_y;
-  int accel_z;
-  int magnetom_x;
-  int magnetom_y;
-  int magnetom_z;
-  float c_magnetom_x;
-  float c_magnetom_y;
-  float c_magnetom_z;
-  float MAG_Heading;
+  int gyro_x = 0;
+  int gyro_y = 0;
+  int gyro_z = 0;
+  int accel_x = 0;
+  int accel_y = 0;
+  int accel_z = 0;
+  int magnetom_x = 0;
+  int magnetom_y = 0;
+  int magnetom_z = 0;
+  float c_magnetom_x = 0.0f;
+  float c_magnetom_y = 0.0f;
+  float c_magnetom_z = 0.0f;
+  float MAG_Heading = 0.0f;
 
   float Accel_Vector[3]= {0,0,0}; //Store the acceleration in a vector
   float Gyro_Vector[3]= {0,0,0};//Store the gyros turn rate in a vector
@@ -142,9 +142,9 @@ private:
   float Omega[3]= {0,0,0};
 
   // Euler angles
-  float roll;
-  float pitch;
-  float yaw;
+  float roll = 0.0f;
+  float pitch = 0.0f;
+  float yaw = 0.0f;
 
   float errorRollPitch[3]= {0,0,0};
   float errorYaw[3]= {0,0,0};
