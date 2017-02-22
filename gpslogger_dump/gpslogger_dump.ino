@@ -16,7 +16,7 @@ void setup()
   // connect at 115200 so we can read the GPS fast enuf and
   // also spit it out
   Serial.begin(115200);
-  Serial.println("Adafruit GPS logging dump test!");
+  Serial.println("Adafruit GPS logging dump!");
 
   // 9600 NMEA is the default baud rate for MTK - some use 4800
   GPS.begin(9600);
