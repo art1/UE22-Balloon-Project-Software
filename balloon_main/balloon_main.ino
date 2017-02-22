@@ -153,7 +153,7 @@ void loop() //Main Loop
   pressure_data ms1;
   #ifdef IMU_ENABLED
 
-  //runIMUIntegration();
+  runIMUIntegration();
 
   #ifdef IMU_DEBUG_OUTPUT
   filtered_data filt = ahrs.getFilteredData();

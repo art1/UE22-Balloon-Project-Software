@@ -76,6 +76,17 @@ void AHRS::ahrs_init(){
  *    long timer_old  timer from previous loop cycle
  */
 void AHRS::ahrs_fetchData(long timer, long timer_old){
+  #ifdef IMU_ONLY_RAW
+    imu.Read_Gyro();   // This read gyro data
+    imu.Read_Accel();     // Read I2C accelerometer
+    counter++;
+    if (counter > 5)  // Read compass data at 10Hz... (5 loop runs)
+    {
+      counter=0;
+      imu.Read_Compass();    // Read I2C magnetometer
+      imu.Compass_Heading(); // Calculate magnetic heading
+    }
+  #else
   counter++;
   if (timer>timer_old)
     {
@@ -105,6 +116,7 @@ void AHRS::ahrs_fetchData(long timer, long timer_old){
     imu.Normalize();
     imu.Drift_correction();
     imu.Euler_angles();
+    #endif
 }
 
 /**
