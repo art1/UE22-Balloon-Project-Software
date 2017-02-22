@@ -20,7 +20,8 @@ void SDCard::init(){
  *  @Input: String: filename specifying the name and format (.txt, .csv)
  */
 void SDCard::writeHeader(String fn){
-  String dataString = "Yaw,Pitch,Roll,Gx,Gy,Gz,Ax,Ay,Az,Mx,My,Mz,temp0,temp1,temp2,temp3,temp4,press0,press1,alt0,alt1,humid,lum0,lum1";
+  //String dataString_IMU = "Yaw,Pitch,Roll,Gx,Gy,Gz,Ax,Ay,Az,Mx,My,Mz,temp0,temp1,temp2,temp3,temp4,press0,press1,alt0,alt1,humid,lum0,lum1";
+  String dataString = "temp0,temp1,temp2,temp3,temp4,press0,press1,humid,lum0,lum1";
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
   File dataFile = SD.open(fn, FILE_WRITE);
@@ -66,7 +67,7 @@ void SDCard::writeGPSSync(String fn, unsigned long m){
  *         String: filename specifying the name and format (.txt, .csv)
  */
 void SDCard::writeToSD(dataToSD d, String fn){
-  String dataString = d.toString();
+  String dataString = d.toString_noIMU();
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
   File dataFile = SD.open(fn, FILE_WRITE);

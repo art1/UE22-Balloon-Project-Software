@@ -153,7 +153,7 @@ void loop() //Main Loop
   pressure_data ms1;
   #ifdef IMU_ENABLED
 
-  runIMUIntegration();
+  //runIMUIntegration();
 
   #ifdef IMU_DEBUG_OUTPUT
   filtered_data filt = ahrs.getFilteredData();
@@ -216,7 +216,7 @@ void loop() //Main Loop
     //runIMUIntegration();
 
     #ifdef DEBUG_OUTPUT
-    Serial.println(d.toString());
+    Serial.println(d.toString_noIMU());
     #endif
   }
 

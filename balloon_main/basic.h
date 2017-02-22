@@ -12,7 +12,7 @@
 #include <MS5611.h>
 
 #define DEBUG_OUTPUT
-#define IMU_ENABLED
+//#define IMU_ENABLED
 //#define IMU_DEBUG_OUTPUT
 #define SD_ENABLED
 // not using Dallas !!!!
@@ -115,7 +115,15 @@ struct dataToSD{
     String(gy) + "," + String(gz) + "," + String(ax) + "," + String(ay) + "," + String(az) + "," + String(mx, dec) + "," +
     String(my, dec) + "," + String(mz, dec) + "," + String(temp0, dec) + "," + String(temp1, dec) + "," + String(temp2, dec) + "," +
     String(temp3, dec) + "," + String(temp4, dec) + "," + String(press0, dec) + "," + String(press1, dec) + "," +
-    String(alt0, dec) + "," + String(alt1, dec) + "," + String(humid, dec) + "," + String(lum0, dec) + "," + String(lum1, dec) + "," + String(gpsFix);
+    String(humid, dec) + "," + String(lum0, dec) + "," + String(lum1, dec) + "," + String(gpsFix);
+  }
+  
+  String toString_noIMU(){
+    short dec = 3; //digits after comma
+    return String(millis()) + "," + 
+    String(temp0, dec) + "," + String(temp1, dec) + "," + String(temp2, dec) + "," + String(temp3, dec) + "," +
+    String(temp4, dec) + "," + String(press0, dec) + "," + String(press1, dec) + "," + String(humid, dec) + "," +
+    String(lum0, dec) + "," + String(lum1, dec) + "," + String(gpsFix);
   }
 };
 
