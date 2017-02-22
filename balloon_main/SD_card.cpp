@@ -67,7 +67,7 @@ void SDCard::writeGPSSync(String fn, unsigned long m){
  *         String: filename specifying the name and format (.txt, .csv)
  */
 void SDCard::writeToSD(dataToSD d, String fn){
-  String dataString = d.toString_noIMU();
+  String dataString = d.toString();
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
   File dataFile = SD.open(fn, FILE_WRITE);

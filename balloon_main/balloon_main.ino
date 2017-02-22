@@ -216,7 +216,7 @@ void loop() //Main Loop
     //runIMUIntegration();
 
     #ifdef DEBUG_OUTPUT
-    Serial.println(d.toString_noIMU());
+    Serial.println(d.toString());
     #endif
   }
 

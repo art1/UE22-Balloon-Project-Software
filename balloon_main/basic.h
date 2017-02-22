@@ -12,7 +12,7 @@
 #include <MS5611.h>
 
 #define DEBUG_OUTPUT
-//#define IMU_ENABLED
+#define IMU_ENABLED
 //#define IMU_DEBUG_OUTPUT
 #define SD_ENABLED
 // not using Dallas !!!!
