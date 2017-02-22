@@ -9,7 +9,7 @@ public:
   void writeHeader(String fn);
   void writeGPSSync(String fn, unsigned long m);
   void writeToSD(dataToSD d, String fn);
-  const String filename = "balloonl.csv";
+  const String filename = "balloonm.csv";
 private:
   const int chipSelect = 8;
   void blink();

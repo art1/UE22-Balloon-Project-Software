@@ -20,8 +20,10 @@ void SDCard::init(){
  *  @Input: String: filename specifying the name and format (.txt, .csv)
  */
 void SDCard::writeHeader(String fn){
-  //String dataString_IMU = "Yaw,Pitch,Roll,Gx,Gy,Gz,Ax,Ay,Az,Mx,My,Mz,temp0,temp1,temp2,temp3,temp4,press0,press1,alt0,alt1,humid,lum0,lum1";
-  String dataString = "temp0,temp1,temp2,temp3,temp4,press0,press1,humid,lum0,lum1";
+  //String dataString_IMU = "Yaw,Pitch,Roll,Gx,Gy,Gz,Ax,Ay,Az,Mx,My,Mz,temp0,temp1,temp2,temp3,temp4,press0,press1,humid,lum0,lum1";
+  //String dataString_noIMU = "temp0,temp1,temp2,temp3,temp4,press0,press1,humid,lum0,lum1";
+  String dataString = "Gx,Gy,Gz,Ax,Ay,Az,Mx,My,Mz,temp0,temp1,temp2,temp3,temp4,press0,press1,humid,lum0,lum1";
+
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
   File dataFile = SD.open(fn, FILE_WRITE);
@@ -67,7 +69,7 @@ void SDCard::writeGPSSync(String fn, unsigned long m){
  *         String: filename specifying the name and format (.txt, .csv)
  */
 void SDCard::writeToSD(dataToSD d, String fn){
-  String dataString = d.toString();
+  String dataString = d.toString_noFilter();
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
   File dataFile = SD.open(fn, FILE_WRITE);
@@ -90,6 +92,7 @@ void SDCard::writeToSD(dataToSD d, String fn){
  * being written to the SD
  */
 void SDCard::blink(){
+  
   if(led_state){
     digitalWrite(22, HIGH);   // turn the LED on (HIGH is the voltage level)
     led_state = 0;

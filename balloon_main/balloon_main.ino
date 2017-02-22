@@ -62,6 +62,7 @@ float htu_temp = 0.0f;
 int currentGPS_SyncPinState(){
   return digitalRead(GPS_SYNC_PIN);
 }
+
 #endif
 
 
@@ -74,19 +75,27 @@ unsigned long timer_old, timer_old_sd, timer_old_dallas, timer_old_mcp, timerGPS
 
 void software_Reset() // Restarts program from beginning but does not reset the peripherals and registers
 {
-asm volatile ("  jmp 0");
+  asm volatile ("  jmp 0");
 }
 
 
 void runIMUIntegration(){
-    #ifdef IMU_ENABLED
-    if((millis()-timer)>=20)  // AHRS loop runs at 50Hz
-    {
-      timer_old = timer;
-      timer=millis();
-      ahrs.ahrs_fetchData(timer,timer_old);
-    }
-    #endif
+  #ifdef IMU_ENABLED
+  if((millis()-timer)>=20)  // AHRS loop runs at 50Hz
+  {
+    timer_old = timer;
+    timer=millis();
+    ahrs.ahrs_fetchData(timer,timer_old);
+  }
+  #endif
+}
+
+void setLED(bool s){
+  if(s){
+    digitalWrite(23, HIGH);   // turn the LED on (HIGH is the voltage level)
+  }else{
+    digitalWrite(23, LOW);   // turn the LED off by making the voltage LOW
+  }
 }
 
 
@@ -95,54 +104,56 @@ void setup()
   Serial.begin(115200);
   Serial.println(F("initializing Balloon...."));
   Wire.begin();
-
+  
   #ifdef SD_ENABLED
   sd.init();
   sd.writeHeader(sd.filename);
   #endif
-
+  
   #ifdef LIGHT_ENABLED
   initLightSensor0();
   #endif
-
+  
   #ifdef LIGHT2_ENABLED
   initLightSensor1();
   #endif
-
+  
   #ifdef MCP_ENABLED
   initMCPSensor0();
   #endif
-
+  
   #ifdef MCP2_ENABLED
   initMCPSensor1();
   #endif
-
+  
   #ifdef DALLAS_ENABLED
   initDallasSensor();
   #endif
-
+  
   #ifdef HUMID_ENABLED
   htu.begin();
   #endif
-
+  
   #ifdef BMP_ENABLED
   pressure.begin();
   #endif
-
+  
   #ifdef IMU_ENABLED
   ahrs.ahrs_init();
   delay(200);
   #endif
-
+  
   #ifdef GPS_SYNC_ENABLED
   pinMode(GPS_SYNC_PIN,INPUT);
   digitalWrite(GPS_SYNC_PIN,HIGH);
-  #endif
+  pinMode(23, OUTPUT); //LED_YELLOW PIN
 
+  #endif
+  
   #ifdef MS_ENABLED
   initMSSensor();
   #endif
-
+  
   timer=millis();
 }
 
@@ -152,9 +163,9 @@ void loop() //Main Loop
   pressure_data bmp;
   pressure_data ms1;
   #ifdef IMU_ENABLED
-
+  
   runIMUIntegration();
-
+  
   #ifdef IMU_DEBUG_OUTPUT
   filtered_data filt = ahrs.getFilteredData();
   raw_data raw = ahrs.getRawData();
@@ -166,139 +177,130 @@ void loop() //Main Loop
   Serial.print(ToDeg(filt.yaw));
   Serial.println();
   #endif
-
+  
   #endif
-
-
-
-
+  
+  
+  
+  
   if((millis()-timer_sd)>=500)  // SD loop runs at 2Hz
   {
     timer_old_sd = timer_sd;
     timer_sd=millis();
-
-
+    
+    
     d.lum0 = lightsensval0;
     d.lum1 = lightsensval1;
     d.humid = humidity;
     d.temp2 = htu_temp;
     d.temp0 = MCPtempval0;
     d.temp1 = MCPtempval1;
-
-
+    
+    
     #ifdef BMP_ENABLED
     bmp = readBMPSensor_pressure();
     d.pressureDataToSDStruct(bmp,FALSE);
     #endif
-
+    
     #ifdef MS_ENABLED
     ms1 = readMSSensor();
     d.pressureDataToSDStruct(ms1,TRUE);
     #endif
-
+    
     #ifdef IMU_ENABLED
     d.filterDataToSDStruct(ahrs.getFilteredData());
     d.rawDataToSDStruct(ahrs.getRawData());
     #endif
-
-
+    
+    
     #ifdef GPS_SYNC_ENABLED
     int fix = currentGPS_SyncPinState();
     if(fix == 0) fix = 1;
     else if(fix == 1) fix = 0;
     d.gpsFix = fix;
+    setLED(d.gpsFix);
     #endif
-
+    
     #ifdef SD_ENABLED
     sd.writeToSD(d, sd.filename); //writes Data to specified File
     #endif
-
-    //runIMUIntegration();
-
+    
     #ifdef DEBUG_OUTPUT
-    Serial.println(d.toString());
+    Serial.println(d.toString_noFilter());
     #endif
   }
-
+  
   if((millis()-timer_mcp)>=100)  // Measurement loop runs at 10Hz
   {
-
+    
     timer_old_mcp = timer_mcp;
     timer_mcp=millis();
-
+    
     #ifdef MCP_ENABLED
     MCPtempval0 = readMCPSensor0();
     #endif
-
+    
     #ifdef MCP2_ENABLED
     MCPtempval1 = readMCPSensor1();
     #endif
-
-    //runIMUIntegration();
-
+    
     #if defined(MCP_ENABLED) || defined(MCP2_ENABLED)
     delay(250);
     #endif
-
-    //runIMUIntegration();
-
+    
     #ifdef LIGHT_ENABLED
     light0.manualStart();
     #endif
-
+    
     #ifdef LIGHT2_ENABLED
     light1.manualStart();
     #endif
-
+    
     #ifdef MCP_ENABLED
     tempsensor0.shutdown_wake(1);
     #endif
-
+    
     #ifdef MCP2_ENABLED
     tempsensor1.shutdown_wake(1);
     #endif
-
+    
     ms = 100;
     delay(ms); //This should be moved
-
-    //runIMUIntegration();
-
+    
     #ifdef LIGHT_ENABLED
     light0.manualStop();
     #endif
-
+    
     #ifdef LIGHT2_ENABLED
     light1.manualStop();
     #endif
-
+    
     #ifdef MCP_ENABLED
     tempsensor0.shutdown_wake(0);
     #endif
-
+    
     #ifdef MCP2_ENABLED
     tempsensor1.shutdown_wake(0);
     #endif
-
+    
     #ifdef LIGHT_ENABLED
     lightsensval0 = readLightSensor0();
     #endif
-
+    
     #ifdef LIGHT2_ENABLED
     lightsensval1 = readLightSensor1();
     #endif
-
+    
     #ifdef DALLAS_ENABLED
     Dallastempval = readDallasSensor();
     #endif
-
-    //runIMUIntegration();
-
+    
     #ifdef HUMID_ENABLED
     humidity = htu.readHumidity();
     htu_temp = htu.readTemperature();
     #endif
-
-
+    
+    
   }
-
+  
 }
